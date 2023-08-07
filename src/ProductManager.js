@@ -117,3 +117,4 @@ async function testProductManager() {
 
 testProductManager();
 
+export default ProductManager;
