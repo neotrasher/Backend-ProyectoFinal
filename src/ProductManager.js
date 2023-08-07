@@ -24,6 +24,7 @@ class ProductManager {
     }
 
     async addProduct(productData) {
+        await this.loadProducts();
         const product = {
             id: this.generateUniqueId(),
             ...productData,
@@ -35,6 +36,7 @@ class ProductManager {
     }
 
     getProductById(productId) {
+        this.loadProducts(); 
         const product = this.products.find((p) => p.id === productId);
         if (!product) {
             throw new Error("Producto no encontrado.");
@@ -43,6 +45,7 @@ class ProductManager {
     }
 
     async updateProduct(productId, updatedFields) {
+        await this.loadProducts(); 
         const productIndex = this.products.findIndex((p) => p.id === productId);
         if (productIndex === -1) {
             throw new Error("Producto no encontrado.");
@@ -54,6 +57,7 @@ class ProductManager {
     }
 
     async deleteProduct(productId) {
+        await this.loadProducts(); 
         const productIndex = this.products.findIndex((p) => p.id === productId);
         if (productIndex === -1) {
             throw new Error("Producto no encontrado.");
