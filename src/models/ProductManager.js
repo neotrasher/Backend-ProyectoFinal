@@ -31,6 +31,7 @@ class ProductManager {
         await this.loadProducts();
         const product = {
             id: this.generateUniqueId(),
+            thumbnails: [],
             ...productData,
         };
 

@@ -1,24 +1,42 @@
 [
   {
-    "id": "llb9cnevqzx15",
+    "id": "llbca8imuh79u",
     "products": [
       {
         "productId": {
-          "id": "llb82xs6l3u8m",
+          "id": "llbc9ohu2o7th",
+          "thumbnails": [
+            "thumbnails/img1.png",
+            "thumbnails/img2.png"
+          ],
           "title": "Nuevo Producto 2",
           "description": "Descripción del nuevo producto",
-          "price": 39.99,
+          "price": 129.99,
+          "code": "XYZ790",
+          "status": true,
+          "stock": 5,
+          "category": "Nueva Categoría",
+          "quantity": 1
+        },
+        "quantity": 1
+      },
+      {
+        "productId": {
+          "id": "llbc7z7yxnhzf",
+          "thumbnails": [
+            "thumbnails/img1.png",
+            "thumbnails/img2.png"
+          ],
+          "title": "Nuevo Producto 1 con precio nuevo",
+          "description": "Descripción del nuevo producto",
+          "price": 19.99,
           "code": "XYZ789",
           "status": true,
           "stock": 5,
           "category": "Nueva Categoría",
-          "quantity": 1,
-          "thumbnails": [
-            "ruta5.jpg",
-            "ruta6.jpg"
-          ]
+          "quantity": 1
         },
-        "quantity": 4
+        "quantity": 6
       }
     ]
   }

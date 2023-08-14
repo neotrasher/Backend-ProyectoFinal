@@ -23,8 +23,9 @@ const upload = multer({ storage });
 router.post('/', upload.single('thumbnail'), async (req, res) => {
     try {
         const productData = req.body;
-        const thumbnailPath = req.file ? req.file.path : ''; 
-        const newProduct = await productManager.addProduct({ ...productData, thumbnail: thumbnailPath });
+        const thumbnailPath = req.file ? req.file.path : '';        
+        const thumbnails = productData.thumbnails || [];        
+        const newProduct = await productManager.addProduct({ ...productData, thumbnails, thumbnail: thumbnailPath });
         res.json(newProduct);
     } catch (error) {
         res.status(500).json({ error: error.message });
