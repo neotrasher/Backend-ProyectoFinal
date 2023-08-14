@@ -1,8 +1,11 @@
-import {promises as fs } from 'fs'
+import { promises as fs } from 'fs';
+import { fileURLToPath } from 'url';
+import path from 'path';
 
 class ProductManager {
     constructor(filePath) {
-        this.path = filePath;
+        const __filename = fileURLToPath(import.meta.url);
+        this.path = path.join(path.dirname(__filename), '..', 'data', filePath);
         this.products = [];
     }
 
@@ -19,7 +22,8 @@ class ProductManager {
         await fs.writeFile(this.path, JSON.stringify(this.products, null, 2), 'utf-8');
     }
 
-    getProducts() {
+    async getProducts() {
+        await this.loadProducts();
         return this.products;
     }
 
@@ -35,8 +39,8 @@ class ProductManager {
         return product;
     }
 
-    getProductById(productId) {
-        this.loadProducts(); 
+    async getProductById(productId) {
+        await this.loadProducts();
         const product = this.products.find((p) => p.id === productId);
         if (!product) {
             throw new Error("Producto no encontrado.");
@@ -45,7 +49,7 @@ class ProductManager {
     }
 
     async updateProduct(productId, updatedFields) {
-        await this.loadProducts(); 
+        await this.loadProducts();
         const productIndex = this.products.findIndex((p) => p.id === productId);
         if (productIndex === -1) {
             throw new Error("Producto no encontrado.");
@@ -57,7 +61,7 @@ class ProductManager {
     }
 
     async deleteProduct(productId) {
-        await this.loadProducts(); 
+        await this.loadProducts();
         const productIndex = this.products.findIndex((p) => p.id === productId);
         if (productIndex === -1) {
             throw new Error("Producto no encontrado.");
@@ -65,6 +69,8 @@ class ProductManager {
 
         this.products.splice(productIndex, 1);
         await this.saveProducts();
+
+        return "Producto eliminado correctamente.";
     }
 
     isCodeUnique(code) {
@@ -76,49 +82,4 @@ class ProductManager {
     }
 }
 
-const filePath = 'products.json';
-const productManager = new ProductManager(filePath);
-
-async function testProductManager() {
-    try {
-        await productManager.loadProducts();
-
-        console.log('Productos iniciales:', productManager.getProducts());
-
-        const newProductData = {
-            title: "producto prueba",
-            description: "Este es un producto prueba",
-            price: 200000,
-            thumbnail: "Sin imagen",
-            code: "codigoXX",
-            stock: 8,
-        };
-
-        const newProduct = await productManager.addProduct(newProductData);
-        console.log('Producto agregado:', newProduct);
-
-        console.log('Productos actualizados:', productManager.getProducts());
-
-        const productIdToFind = newProduct.id;
-        console.log('Producto encontrado por ID:', productManager.getProductById(productIdToFind));
-
-        const updatedFields = { title: "Producto actualizado", price: 55000 };
-        const updatedProduct = await productManager.updateProduct(productIdToFind, updatedFields);
-        console.log('Producto actualizado:', updatedProduct);
-
-        await productManager.deleteProduct(productIdToFind);
-        console.log('Productos después de eliminar el producto:', productManager.getProducts());
-
-        try {
-            console.log('Producto eliminado:', productManager.getProductById(productIdToFind));
-        } catch (error) {
-            console.error('Error al buscar producto eliminado:', error.message);
-        }
-    } catch (error) {
-        console.error('Error:', error.message);
-    }
-}
-
-testProductManager();
-
-export default ProductManager;
+export { ProductManager };

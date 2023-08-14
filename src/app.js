@@ -1,49 +1,19 @@
 import express from 'express';
-import ProductManager from './ProductManager.js';
+import productRoutes from './routes/productRoutes.js';
+import cartRoutes from './routes/cartRoutes.js';
 
 const app = express();
 const port = 8080;
-const filePath = 'products.json';
-
-const productManager = new ProductManager(filePath);
 
 app.use(express.json());
 
-app.get('/products', async (req, res) => {
-    try {
-        await productManager.loadProducts();
-        const limit = req.query.limit ? parseInt(req.query.limit) : undefined;
-        const products = productManager.getProducts();
+app.use('/api/products', productRoutes);
+app.use('/api/carts', cartRoutes);
 
-        if (limit) {
-            res.json(products.slice(0, limit));
-        } else {
-            res.json(products);
-        }
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+// Middleware para manejar rutas no válidas (404)
+app.use((req, res, next) => {
+    res.status(404).json({ error: 'Ruta no encontrada' });
 });
-
-app.get('/products/:pid', async (req, res) => {
-    try {
-        await productManager.loadProducts();
-        const productId = req.params.pid;
-        const product = productManager.getProductById(productId);
-        res.json(product);
-    } catch (error) {
-        res.status(404).json({ error: error.message });
-    }
-});
-
-async function loadProducts() {
-    try {
-        const data = await fs.readFile(filePath, 'utf-8');
-        return JSON.parse(data);
-    } catch (error) {
-        return [];
-    }
-}
 
 app.listen(port, () => {
     console.log(`Servidor escuchando en el puerto ${port}`);

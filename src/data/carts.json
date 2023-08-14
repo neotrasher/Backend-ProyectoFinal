@@ -1,0 +1,25 @@
+[
+  {
+    "id": "llb9cnevqzx15",
+    "products": [
+      {
+        "productId": {
+          "id": "llb82xs6l3u8m",
+          "title": "Nuevo Producto 2",
+          "description": "Descripción del nuevo producto",
+          "price": 39.99,
+          "code": "XYZ789",
+          "status": true,
+          "stock": 5,
+          "category": "Nueva Categoría",
+          "quantity": 1,
+          "thumbnails": [
+            "ruta5.jpg",
+            "ruta6.jpg"
+          ]
+        },
+        "quantity": 4
+      }
+    ]
+  }
+]
