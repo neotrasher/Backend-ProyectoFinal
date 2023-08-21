@@ -10,11 +10,24 @@
 
 <body>
     <h1>Real-Time Products</h1>
-    <ul>
+    <h2>Agregar Nuevo Producto</h2>
+    <form id="addProductForm">
+        <label for="title">Título:</label>
+        <input type="text" id="title" name="title" required>
+        <label for="price">Precio:</label>
+        <input type="number" id="price" name="price" step="0.01" required>
+        <button type="submit">Agregar Producto</button>
+    </form>
+    <h2>Eliminar Producto</h2>
+    <ul id="productList">
         {{#each products}}
-        <li>{{this.title}} - {{this.price}}</li>
+        <li data-product-id="{{this.id}}">
+            {{this.title}} - {{this.price}}
+            <button class="delete-button" data-product-id="{{this.id}}" style="background-color: red;">Eliminar</button>
+        </li>
         {{/each}}
     </ul>
+
     <script src="/socket.io/socket.io.js"></script>
     <script>
         // Establecer la conexión WebSocket
@@ -31,6 +44,7 @@
 
         // Escuchar el evento 'productDeleted' y eliminar el producto de la lista en tiempo real
         socket.on('productDeleted', (deletedProductId) => {
+            console.log('Producto eliminado:', deletedProductId);
             const productList = document.querySelector('ul');
             const listItem = Array.from(productList.children).find((li) => {
                 const productId = li.getAttribute('data-product-id');
@@ -39,6 +53,27 @@
 
             if (listItem) {
                 productList.removeChild(listItem);
+            }
+        });
+
+        const addProductForm = document.getElementById('addProductForm');
+        addProductForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const title = document.getElementById('title').value;
+            const price = parseFloat(document.getElementById('price').value);
+
+            socket.emit('createProduct', { title, price });
+
+            addProductForm.reset();
+        });
+
+        const productList = document.getElementById('productList');
+        productList.addEventListener('click', (event) => {
+            if (event.target.classList.contains('delete-button')) {
+                const productId = event.target.parentElement.getAttribute('data-product-id');
+                console.log('Eliminar producto con ID:', productId);
+                socket.emit('deleteProduct', productId);
             }
         });
     </script>

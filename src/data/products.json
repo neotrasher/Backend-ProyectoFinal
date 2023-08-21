@@ -1,62 +1,26 @@
 [
   {
-    "id": "lll9nqxdgi0ri",
-    "thumbnails": [
-      "thumbnails/img1.png",
-      "thumbnails/img2.png"
-    ],
-    "title": "Arete 1",
-    "description": "Descripción del nuevo producto",
-    "price": 10.99,
-    "code": "XYZ7789",
-    "status": true,
-    "stock": 5,
-    "category": "Nueva Categoría",
-    "quantity": 1
+    "id": "lllcr1g9lgs86",
+    "thumbnails": [],
+    "title": "aretes",
+    "price": 3
   },
   {
-    "id": "lll9o2jd1svez",
-    "thumbnails": [
-      "thumbnails/img1.png",
-      "thumbnails/img2.png"
-    ],
-    "title": "Collar 1",
-    "description": "Descripción del nuevo producto",
-    "price": 20.99,
-    "code": "XYZ7789",
-    "status": true,
-    "stock": 5,
-    "category": "Nueva Categoría",
-    "quantity": 1
+    "id": "lllcrfh5ujg5m",
+    "thumbnails": [],
+    "title": "Aretes 1",
+    "price": 23
   },
   {
-    "id": "lll9opg4g56u5",
-    "thumbnails": [
-      "thumbnails/img1.png",
-      "thumbnails/img2.png"
-    ],
-    "title": "Pulsera 1",
-    "description": "Descripción del nuevo producto",
-    "price": 30.99,
-    "code": "XYZ7789",
-    "status": true,
-    "stock": 5,
-    "category": "Nueva Categoría",
-    "quantity": 1
+    "id": "lllcrpw8bsp0s",
+    "thumbnails": [],
+    "title": "32",
+    "price": 323
   },
   {
-    "id": "lll9svb64qjd1",
-    "thumbnails": [
-      "thumbnails/img1.png",
-      "thumbnails/img2.png"
-    ],
-    "title": "Arete 2",
-    "description": "Descripción del nuevo producto",
-    "price": 40.99,
-    "code": "XYZ7789",
-    "status": true,
-    "stock": 5,
-    "category": "Nueva Categoría",
-    "quantity": 1
+    "id": "lllcsqvcgbf3a",
+    "thumbnails": [],
+    "title": "aretes",
+    "price": 1222
   }
 ]
