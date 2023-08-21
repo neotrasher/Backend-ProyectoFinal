@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Products</title>
+</head>
+
+<body>
+    <h1>Real-Time Products</h1>
+    <ul>
+        {{#each products}}
+        <li>{{this.title}} - {{this.price}}</li>
+        {{/each}}
+    </ul>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // Establecer la conexión WebSocket
+        const socket = io();
+
+        // Escuchar el evento 'productCreated' y actualizar la lista en tiempo real
+        socket.on('productCreated', (newProduct) => {
+            const productList = document.querySelector('ul');
+            const listItem = document.createElement('li');
+            listItem.textContent = `${newProduct.title} - ${newProduct.price}`;
+            listItem.setAttribute('data-product-id', newProduct.id);
+            productList.appendChild(listItem);
+        });
+
+        // Escuchar el evento 'productDeleted' y eliminar el producto de la lista en tiempo real
+        socket.on('productDeleted', (deletedProductId) => {
+            const productList = document.querySelector('ul');
+            const listItem = Array.from(productList.children).find((li) => {
+                const productId = li.getAttribute('data-product-id');
+                return productId === deletedProductId;
+            });
+
+            if (listItem) {
+                productList.removeChild(listItem);
+            }
+        });
+    </script>
+</body>
+
+</html>
