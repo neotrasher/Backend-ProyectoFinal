@@ -70,6 +70,7 @@
 
         const productList = document.getElementById('productList');
         productList.addEventListener('click', (event) => {
+            console.log('Evento de clic activado');
             if (event.target.classList.contains('delete-button')) {
                 const productId = event.target.parentElement.getAttribute('data-product-id');
                 console.log('Eliminar producto con ID:', productId);
