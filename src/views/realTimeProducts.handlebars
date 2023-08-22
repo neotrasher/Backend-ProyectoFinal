@@ -18,15 +18,6 @@
         <input type="number" id="price" name="price" step="0.01" required>
         <button type="submit">Agregar Producto</button>
     </form>
-    <h2>Eliminar Producto</h2>
-    <ul id="productList">
-        {{#each products}}
-        <li data-product-id="{{this.id}}">
-            {{this.title}} - {{this.price}}
-            <button class="delete-button" data-product-id="{{this.id}}" style="background-color: red;">Eliminar</button>
-        </li>
-        {{/each}}
-    </ul>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
@@ -39,17 +30,26 @@
             const listItem = document.createElement('li');
             listItem.textContent = `${newProduct.title} - ${newProduct.price}`;
             listItem.setAttribute('data-product-id', newProduct.id);
+
+            const deleteButton = document.createElement('button');
+            deleteButton.classList.add('delete-button');
+            deleteButton.setAttribute('data-product-id', newProduct.id);
+            deleteButton.textContent = 'Eliminar';
+            deleteButton.style.backgroundColor = 'pink';
+
+            deleteButton.addEventListener('click', () => {
+                const productId = listItem.getAttribute('data-product-id');
+                socket.emit('deleteProduct', productId);
+            });
+
+            listItem.appendChild(deleteButton);
             productList.appendChild(listItem);
         });
 
-        // Escuchar el evento 'productDeleted' y eliminar el producto de la lista en tiempo real
         socket.on('productDeleted', (deletedProductId) => {
             console.log('Producto eliminado:', deletedProductId);
             const productList = document.querySelector('ul');
-            const listItem = Array.from(productList.children).find((li) => {
-                const productId = li.getAttribute('data-product-id');
-                return productId === deletedProductId;
-            });
+            const listItem = productList.querySelector(`[data-product-id="${deletedProductId}"]`);
 
             if (listItem) {
                 productList.removeChild(listItem);
@@ -66,16 +66,6 @@
             socket.emit('createProduct', { title, price });
 
             addProductForm.reset();
-        });
-
-        const productList = document.getElementById('productList');
-        productList.addEventListener('click', (event) => {
-            console.log('Evento de clic activado');
-            if (event.target.classList.contains('delete-button')) {
-                const productId = event.target.parentElement.getAttribute('data-product-id');
-                console.log('Eliminar producto con ID:', productId);
-                socket.emit('deleteProduct', productId);
-            }
         });
     </script>
 </body>

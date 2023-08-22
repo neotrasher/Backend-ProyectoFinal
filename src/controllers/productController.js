@@ -78,6 +78,7 @@ export const updateProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
     try {
         const productId = req.params.pid;
+        console.log('Eliminar producto con ID en el servidor:', productId);
         await productManager.deleteProduct(productId);
         io.emit('productDeleted', productId);
         res.status(200).send("Producto eliminado correctamente.");

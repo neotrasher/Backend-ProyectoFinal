@@ -37,8 +37,13 @@ app.get('/', async (req, res) => {
 });
 
 
-app.get('/realtimeproducts', (req, res) => {
-    res.render('realTimeProducts');
+app.get('/realtimeproducts', async (req, res) => {
+    try {
+        const products = await productManager.getProducts();
+        res.render('realtimeproducts', { products });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 app.use((req, res, next) => {
@@ -63,6 +68,7 @@ io.on('connection', (socket) => {
     });
     // Evento de eliminación de producto
     socket.on('deleteProduct', async (productId) => {
+        console.log('Evento de eliminación recibido:', productId);
         try {
             await productManager.deleteProduct(productId);
             io.emit('productDeleted', productId);
