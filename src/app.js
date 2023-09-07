@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import express from 'express';
 import { engine } from 'express-handlebars';
 import http from 'http';
@@ -6,7 +7,9 @@ import productRoutes from './routes/productRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { ProductManager } from './models/ProductManager.js';
+import productModel from './models/products.models.js';
+import messageModel from './models/messages.models.js';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,7 +17,17 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const port = 8080;
 
-const productManager = new ProductManager('products.json');
+mongoose.connect('mongodb+srv://urdanetadiego:oHpJ8BeNakLhRPtV@cluster0.n0g4uwn.mongodb.net/ecommerce?retryWrites=true&w=majority', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+});
+
+const db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'Error de conexión a MongoDB:'));
+db.once('open', () => {
+    console.log('Conexión exitosa a MongoDB.');
+});
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
@@ -27,27 +40,47 @@ app.use(express.json());
 app.use('/api/products', productRoutes);
 app.use('/api/carts', cartRoutes);
 
-app.get('/', async (req, res) => {
+app.get('/', (req, res) => {
+    res.render('index');
+});
+
+app.get('/realtimeproducts', (req, res) => {
+    res.render('realtimeproducts');
+});
+
+app.post('/api/messages', async (req, res) => {
     try {
-        const products = await productManager.getProducts();
-        res.render('index', { products });
+        const { email, message } = req.body;
+        const newMessage = new messageModel({ email, message });
+        await newMessage.save();
+        res.json(newMessage);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-
-app.get('/realtimeproducts', async (req, res) => {
+app.get('/api/messages', async (req, res) => {
     try {
-        const products = await productManager.getProducts();
-        res.render('realtimeproducts', { products });
+        const messages = await messageModel.find();
+        res.json(messages);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-app.use((req, res, next) => {
-    res.status(404).json({ error: 'Ruta no encontrada' });
+app.delete('/api/messages/:messageId', async (req, res) => {
+    try {
+        const messageId = req.params.messageId;
+        const deletedMessage = await messageModel.findByIdAndDelete(messageId);
+
+        if (!deletedMessage) {
+            return res.status(404).json({ error: 'Mensaje no encontrado' });
+        }
+
+        res.status(200).send("Mensaje eliminado correctamente.");
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 const server = http.createServer(app);
@@ -57,29 +90,33 @@ const io = new Server(server, {
 
 io.on('connection', (socket) => {
     console.log('Cliente conectado');
-    // Evento de creación de producto
+
     socket.on('createProduct', async (productData) => {
         try {
-            const newProduct = await productManager.addProduct(productData);
+            const newProduct = await productModel.create(productData);
             io.emit('productCreated', newProduct);
         } catch (error) {
             console.error("Error al crear el producto:", error);
         }
     });
-    // Evento de eliminación de producto
+
     socket.on('deleteProduct', async (productId) => {
-        console.log('Evento de eliminación recibido:', productId);
         try {
-            await productManager.deleteProduct(productId);
+            await productModel.findByIdAndDelete(productId);
             io.emit('productDeleted', productId);
         } catch (error) {
             console.error("Error al eliminar el producto:", error);
         }
     });
-    // Evento de actualización de producto
+
     socket.on('updateProduct', async (updatedProductData) => {
         try {
-            const updatedProduct = await productManager.updateProduct(updatedProductData.productId, updatedProductData.updatedFields);
+            const { productId, updatedFields } = updatedProductData;
+            const updatedProduct = await productModel.findByIdAndUpdate(
+                productId,
+                updatedFields,
+                { new: true }
+            );
             io.emit('productUpdated', updatedProduct);
         } catch (error) {
             console.error("Error al actualizar el producto:", error);
@@ -91,4 +128,4 @@ server.listen(port, () => {
     console.log(`Servidor escuchando en el puerto ${port}`);
 });
 
-export { io, productManager };
+export { io };
