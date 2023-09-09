@@ -2,12 +2,40 @@ import Product from '../models/products.models.js';
 
 export const getProducts = async (req, res) => {
     try {
-        const products = await Product.find(); 
-        res.json(products);
+        const { page = 1, limit = 10, sort, query } = req.query;
+        const options = {
+            page: parseInt(page),
+            limit: parseInt(limit),
+            sort: sort ? { price: sort === 'asc' ? 1 : -1 } : undefined,
+        };
+        const filter = {};
+
+        if (query && query === 'category') {
+            const categoryName = req.query.categoryName;
+            if (categoryName) {
+                filter.category = categoryName;
+            }
+        }
+
+        const result = await Product.paginate(filter, options);
+
+        res.json({
+            status: 'success',
+            payload: result.docs,
+            totalPages: result.totalPages,
+            prevPage: result.prevPage,
+            nextPage: result.nextPage,
+            page: result.page,
+            hasPrevPage: result.hasPrevPage,
+            hasNextPage: result.hasNextPage,
+            prevLink: result.hasPrevPage ? `/api/products?page=${result.prevPage}&limit=${limit}&sort=${sort}&query=${query}` : null,
+            nextLink: result.hasNextPage ? `/api/products?page=${result.nextPage}&limit=${limit}&sort=${sort}&query=${query}` : null,
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+
 
 export const getProductById = async (req, res) => {
     try {

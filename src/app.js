@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import mongoose from 'mongoose';
 import express from 'express';
 import { engine } from 'express-handlebars';
@@ -17,7 +18,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const port = 8080;
 
-mongoose.connect('mongodb+srv://urdanetadiego:oHpJ8BeNakLhRPtV@cluster0.n0g4uwn.mongodb.net/ecommerce?retryWrites=true&w=majority', {
+mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
