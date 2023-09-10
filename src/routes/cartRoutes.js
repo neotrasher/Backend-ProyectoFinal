@@ -12,7 +12,7 @@ import {
 const router = express.Router();
 
 router.post('/', createCart);
-router.put('/:cid', addProductToCart);
+router.post('/:cid/product', addProductToCart);
 router.get('/:cid', getCartById);
 router.get('/:cid/products', getProductsInCart);
 router.put('/:cid/products/:pid', updateProductQuantityInCart);

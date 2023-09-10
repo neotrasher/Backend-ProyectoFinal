@@ -1,9 +1,9 @@
-import Cart from '../models/carts.models.js'; 
+import Cart from '../models/carts.models.js';
 
 
 export const createCart = async (req, res) => {
     try {
-        const newCart = await Cart.create({ products: [] }); 
+        const newCart = await Cart.create({ products: [] });
         res.json(newCart);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -58,7 +58,7 @@ export const getCartById = async (req, res) => {
 export const getProductsInCart = async (req, res) => {
     try {
         const cartId = req.params.cid;
-        const cart = await Cart.findById(cartId); 
+        const cart = await Cart.findById(cartId);
 
         if (!cart) {
             return res.status(404).json({ error: 'Carrito no encontrado' });
