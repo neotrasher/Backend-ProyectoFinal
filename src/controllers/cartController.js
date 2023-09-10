@@ -73,7 +73,11 @@ export const getProductsInCart = async (req, res) => {
 export const updateProductQuantityInCart = async (req, res) => {
     try {
         const cartId = req.params.cid;
-        const { productId, quantity } = req.body;
+        const productId = req.params.pid;
+        const { quantity } = req.body;
+
+        console.log('cartId:', cartId);
+        console.log('productId:', productId);
 
         const updatedCart = await Cart.findOneAndUpdate(
             { _id: cartId, "products.id_prod": productId },
