@@ -13,7 +13,8 @@ export const createCart = async (req, res) => {
 export const addProductToCart = async (req, res) => {
     try {
         const cartId = req.params.cid;
-        const { productId, quantity } = req.body;
+        const productId = req.params.pid;
+        const { quantity } = req.body;
 
         const updatedCart = await Cart.findByIdAndUpdate(
             cartId,
@@ -37,12 +38,10 @@ export const addProductToCart = async (req, res) => {
 export const getCartById = async (req, res) => {
     try {
         const cartId = req.params.cid;
-        const cart = await Cart
-            .findById(cartId)
-            .populate({
-                path: 'products.id_prod',
-                model: 'products'
-            });
+        const cart = await Cart.findById(cartId).populate({
+            path: 'products.id_prod',
+            model: 'products'
+        });
 
         if (!cart) {
             return res.status(404).json({ error: 'Carrito no encontrado' });
@@ -54,14 +53,16 @@ export const getCartById = async (req, res) => {
     }
 };
 
-
 export const getProductsInCart = async (req, res) => {
     try {
         const cartId = req.params.cid;
-        const cart = await Cart.findById(cartId);
+        const cart = await Cart.findById(cartId).populate({
+            path: 'products.id_prod',
+            model: 'products'
+        });
 
         if (!cart) {
-            return res.status(404).json({ error: 'Carrito no encontrado' });
+            return res.status(404).json({ error: 'Carrito sin productos encontrados' });
         }
 
         res.json(cart.products);
@@ -70,14 +71,12 @@ export const getProductsInCart = async (req, res) => {
     }
 };
 
+
 export const updateProductQuantityInCart = async (req, res) => {
     try {
         const cartId = req.params.cid;
         const productId = req.params.pid;
         const { quantity } = req.body;
-
-        console.log('cartId:', cartId);
-        console.log('productId:', productId);
 
         const updatedCart = await Cart.findOneAndUpdate(
             { _id: cartId, "products.id_prod": productId },
