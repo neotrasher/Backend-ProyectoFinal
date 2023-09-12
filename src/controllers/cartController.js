@@ -16,24 +16,28 @@ export const addProductToCart = async (req, res) => {
         const productId = req.params.pid;
         const { quantity } = req.body;
 
-        const updatedCart = await Cart.findByIdAndUpdate(
-            cartId,
-            {
-                $push: {
-                    products: {
-                        id_prod: productId,
-                        quantity: quantity,
-                    },
-                },
-            },
-            { new: true }
-        );
+        const cart = await Cart.findById(cartId);
+
+        const existingProductIndex = cart.products.findIndex(product => product.id_prod.toString() === productId);
+
+        if (existingProductIndex !== -1) {
+            cart.products[existingProductIndex].quantity += quantity;
+        } else {
+            cart.products.push({
+                id_prod: productId,
+                quantity: quantity,
+            });
+        }
+
+        const updatedCart = await cart.save();
 
         res.json(updatedCart);
     } catch (error) {
         res.status(404).json({ error: error.message });
     }
 };
+
+
 
 export const getCartById = async (req, res) => {
     try {
