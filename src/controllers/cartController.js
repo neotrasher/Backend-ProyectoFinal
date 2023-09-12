@@ -37,8 +37,6 @@ export const addProductToCart = async (req, res) => {
     }
 };
 
-
-
 export const getCartById = async (req, res) => {
     try {
         const cartId = req.params.cid;
@@ -75,6 +73,26 @@ export const getProductsInCart = async (req, res) => {
     }
 };
 
+export const updateCart = async (req, res) => {
+    try {
+        const cartId = req.params.cid;
+        const updatedCartData = req.body;
+
+        const updatedCart = await Cart.findByIdAndUpdate(
+            cartId,
+            { $set: updatedCartData },
+            { new: true }
+        );
+
+        if (!updatedCart) {
+            return res.status(404).json({ error: 'Carrito no encontrado' });
+        }
+
+        res.json(updatedCart);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 
 export const updateProductQuantityInCart = async (req, res) => {
     try {
