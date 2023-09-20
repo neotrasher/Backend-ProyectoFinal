@@ -2,7 +2,7 @@ import userModel from '../models/user.models.js';
 
 export const showLogin = (req, res) => {
     if (req.session.user) {
-        res.redirect('/realtimeproducts');
+        res.redirect('/');
     } else {
         res.render('login');
     }
@@ -19,13 +19,17 @@ export const showRegister = (req, res) => {
 export const postRegister = async (req, res) => {
     const { email, password, fullname, age } = req.body;
 
+    const existingUser = await userModel.findOne({ email });
+    if (existingUser) {
+        return res.render('register', { error: 'El correo electrónico ya está registrado' });
+    }
+
     const user = new userModel({ email, password, fullname, age });
     await user.save();
 
     req.session.user = user;
     res.redirect('/');
 };
-
 
 export const postLogin = async (req, res) => {
     const { email, password } = req.body;
