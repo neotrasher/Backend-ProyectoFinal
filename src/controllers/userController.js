@@ -1,4 +1,4 @@
-import userModel from '../models/users.models.js';
+import userModel from '../models/user.models.js';
 
 export const showLogin = (req, res) => {
     if (req.session.user) {
@@ -10,7 +10,7 @@ export const showLogin = (req, res) => {
 
 export const showRegister = (req, res) => {
     if (req.session.user) {
-        res.redirect('/realtimeproducts');
+        res.redirect('/');
     } else {
         res.render('register');
     }
@@ -23,7 +23,7 @@ export const postRegister = async (req, res) => {
     await user.save();
 
     req.session.user = user;
-    res.redirect('/realtimeproducts');
+    res.redirect('/');
 };
 
 
@@ -32,7 +32,7 @@ export const postLogin = async (req, res) => {
     const user = await userModel.findOne({ email }).exec();
     if (user && password === user.password) {
         req.session.user = user;
-        res.redirect('/realtimeproducts');
+        res.redirect('/');
     } else {
         res.render('login', { error: 'Usuario o contraseña incorrectos' });
     }

@@ -26,18 +26,16 @@
                     <th>Nombre</th>
                     <th>Descripción</th>
                     <th>Código</th>
-                    <th>Foto</th>
                     <th>Precio</th>
                     <th>Stock</th>
                 </tr>
             </thead>
             <tbody>
-                {{#each product}}
+                {{#each products}}
                 <tr>
-                    <td>{{this.name}}</td>
+                    <td>{{this.title}}</td>
                     <td>{{this.description}}</td>
                     <td>{{this.code}}</td>
-                    <td><img src="{{this.photo}}" alt="product"></td>
                     <td>{{this.price}}</td>
                     <td>{{this.stock}}</td>
                 </tr>
@@ -45,7 +43,6 @@
             </tbody>
         </table>
     </div>
-
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/main.js"></script>
 </body>
