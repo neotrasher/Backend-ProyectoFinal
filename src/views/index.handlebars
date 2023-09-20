@@ -1,16 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productos</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Document</title>
 </head>
+
 <body>
-    <h1>Listado de productos</h1>
-    <ul>
-        {{#each products}}
-            <li>{{this.title}} - {{this.price}}</li>
-        {{/each}}
-    </ul>
+    <div class="container">
+        <h1>Bienvenido a mi E-commerce</h1>
+
+        {{#if user}}
+        <h2>Bienvenido, {{user.fullname}}!</h2>
+        {{/if}}
+
+        {{#if noUser}}
+        <h2>Por favor, inicia sesión</h2>
+        {{/if}}
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Código</th>
+                    <th>Foto</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each product}}
+                <tr>
+                    <td>{{this.name}}</td>
+                    <td>{{this.description}}</td>
+                    <td>{{this.code}}</td>
+                    <td><img src="{{this.photo}}" alt="product"></td>
+                    <td>{{this.price}}</td>
+                    <td>{{this.stock}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/main.js"></script>
 </body>
+
 </html>

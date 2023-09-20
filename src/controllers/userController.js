@@ -1,84 +1,50 @@
-import User from '../models/user.models.js';
+import userModel from '../models/users.models.js';
 
-export const register = async (req, res, next) => {
-    const { email, password } = req.body;
-
-    try {
-        const existingUser = await User.findOne({ email });
-
-        if (existingUser) {
-            return res.status(400).json({ error: 'El usuario ya existe' });
-        }
-
-        const user = new User({ email, password });
-        const savedUser = await user.save();
-
-        req.session.user = { id: savedUser._id, email: savedUser.email };  
-
-        res.json(savedUser);
-
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: 'Error al registrar al usuario.' });
+export const showLogin = (req, res) => {
+    if (req.session.user) {
+        res.redirect('/realtimeproducts');
+    } else {
+        res.render('login');
     }
 };
 
-export const login = async (req, res, next) => {
-    const { email, password } = req.body;
-
-    try {
-        const user = await User.findOne({ email });
-
-        if (!user) {
-            return res.status(400).json({ error: 'Usuario no encontrado' });
-        }
-
-        if (password !== user.password) {
-            return res.status(400).json({ error: 'Contraseña incorrecta' });
-        }
-
-        req.session.user = { id: user._id, email: user.email }; 
-
-        res.redirect('/');
-    } catch (error) {
-        return res.status(500).json({ error: 'Error al iniciar la sesión.' });
+export const showRegister = (req, res) => {
+    if (req.session.user) {
+        res.redirect('/realtimeproducts');
+    } else {
+        res.render('register');
     }
 };
 
-export const logout = async (req, res, next) => {
+export const postRegister = async (req, res) => {
+    const { email, password, fullname, age } = req.body;
+
+    const user = new userModel({ email, password, fullname, age });
+    await user.save();
+
+    req.session.user = user;
+    res.redirect('/realtimeproducts');
+};
+
+
+export const postLogin = async (req, res) => {
+    const { email, password } = req.body;
+    const user = await userModel.findOne({ email }).exec();
+    if (user && password === user.password) {
+        req.session.user = user;
+        res.redirect('/realtimeproducts');
+    } else {
+        res.render('login', { error: 'Usuario o contraseña incorrectos' });
+    }
+};
+
+export const getLogout = (req, res) => {
     req.session.destroy((err) => {
         if (err) {
-            return res.status(500).json({ error: 'Error al cerrar la sesión.' });
+            res.redirect('/users/profile');
         }
 
-        res.clearCookie('connect.sid').sendStatus(200); 
+        res.clearCookie(req.app.get('cookieName'));
+        res.redirect('/');
     });
-};
-
-export const protect = (req, res, next) => {
-    if (req.session.user) {  
-        next();  
-    } else {
-        res.redirect('/login'); 
-    }
-};
-
-export const redirectIfLoggedIn = (req, res, next) => {
-    if (req.session.user) {  
-        res.redirect('/profile');  
-    } else {
-        next(); 
-    }
-};
-
-export const getProfile = (req, res) => {
-    res.render('partials/profile', { user: req.session.user });  
-};
-
-export const getLogin = (req, res) => {
-    res.render('partials/login');  
-};
-
-export const getRegister = (req, res) => {
-    res.render('partials/register'); 
 };
