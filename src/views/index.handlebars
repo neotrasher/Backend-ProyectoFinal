@@ -4,30 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <title>Document</title>
+    <title>Tu E-commerce</title>
 </head>
 
 <body>
-    <div class="container">
-        <h1>Bienvenido a mi E-commerce</h1>
+    <div class="container py-5">
+        <h1 class="text-center mb-4">Bienvenido a mi E-commerce</h1>
 
         {{#if user}}
-        <h2>Bienvenido, {{user.fullname}}!</h2>
+        <h2 class="text-center text-success mb-4">Bienvenido, {{user.fullname}}!</h2>
+        {{else}}
+        <h2 class="text-center text-warning mb-4">Por favor, inicia sesión</h2>
         {{/if}}
 
-        {{#if noUser}}
-        <h2>Por favor, inicia sesión</h2>
-        {{/if}}
-
-        <table>
-            <thead>
+        <table class="table table-striped">
+            <thead class="thead-dark">
                 <tr>
-                    <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Código</th>
-                    <th>Precio</th>
-                    <th>Stock</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Descripción</th>
+                    <th scope="col">Código</th>
+                    <th scope="col">Foto</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Stock</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,13 +36,25 @@
                     <td>{{this.title}}</td>
                     <td>{{this.description}}</td>
                     <td>{{this.code}}</td>
+                    <td><img src="{{this.photo}}" class="img-fluid" alt="product"></td>
                     <td>{{this.price}}</td>
                     <td>{{this.stock}}</td>
                 </tr>
                 {{/each}}
             </tbody>
         </table>
+        <div class="my-4 d-flex justify-content-center">
+            {{#if hasPrevPage}}
+            <a href="?page={{prevPage}}" class="btn btn-info mr-2">Página previa</a>
+            {{/if}}
+
+            {{#if hasNextPage}}
+            <a href="?page={{nextPage}}" class="btn btn-info ml-2">Página siguiente</a>
+            {{/if}}
+        </div>
+
     </div>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/main.js"></script>
 </body>

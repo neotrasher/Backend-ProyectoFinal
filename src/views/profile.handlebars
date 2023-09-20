@@ -1,8 +1,33 @@
 <head>
     <title>Perfil</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <style>
+        body{
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .profile-card{
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin: 10px;
+            width: 300px;
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Bienvenido {{user.email}}</h1>
-    <h2>Tu rol es {{user.role}}</h2>
+    <div class="profile-card">
+        <img src="your-user-image.jpg" class="rounded-circle w-50 mx-auto d-block" alt="user image">
+        <h2 class="mt-4">Bienvenido {{user.fullname}}</h2>
+        <p class="lead">Tu rol es {{user.role}}</p>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 </body>

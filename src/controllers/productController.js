@@ -98,8 +98,21 @@ export const deleteProduct = async (req, res) => {
 
 export const renderProducts = async (req, res) => {
     try {
-        const products = await Product.find().lean();
-        res.render('index', { products: products });
+        const { page = 1, limit = 10 } = req.query;
+        const options = {
+            page: parseInt(page),
+            limit: parseInt(limit),
+            lean: true
+        };
+        const result = await Product.paginate({}, options);
+
+        res.render('index', { 
+            products: result.docs, 
+            hasPrevPage: result.hasPrevPage, 
+            hasNextPage: result.hasNextPage,
+            prevPage: result.prevPage,
+            nextPage: result.nextPage 
+        });
     } catch (error) {
         console.error(error);
         res.status(500).send('Error al obtener los productos');
