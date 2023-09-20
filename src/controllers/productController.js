@@ -81,7 +81,6 @@ export const updateProduct = async (req, res) => {
     }
 };
 
-
 export const deleteProduct = async (req, res) => {
     try {
         const productId = req.params.pid;
@@ -94,5 +93,15 @@ export const deleteProduct = async (req, res) => {
         res.status(200).send("Producto eliminado correctamente.");
     } catch (error) {
         res.status(500).json({ error: error.message });
+    }
+};
+
+export const renderProducts = async (req, res) => {
+    try {
+        const products = await Product.find().lean();
+        res.render('index', { products: products });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al obtener los productos');
     }
 };
