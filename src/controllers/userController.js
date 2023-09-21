@@ -28,6 +28,7 @@ export const postRegister = async (req, res) => {
     await user.save();
 
     req.session.user = user;
+    res.cookie('userSession', user._id, { signed: true });
     res.redirect('/');
 };
 
@@ -36,6 +37,7 @@ export const postLogin = async (req, res) => {
     const user = await userModel.findOne({ email }).exec();
     if (user && password === user.password) {
         req.session.user = user;
+        res.cookie('userSession', user._id, { signed: true });
         res.redirect('/');
     } else {
         res.render('login', { error: 'Usuario o contraseña incorrectos' });
