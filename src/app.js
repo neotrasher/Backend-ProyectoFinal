@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import express from 'express';
 import session from 'express-session';
 import { engine } from 'express-handlebars';
+import MongoDBStore from 'connect-mongodb-session';
+import cookieParser from 'cookie-parser';
 import http from 'http';
 import { Server } from 'socket.io';
 import productRoutes from './routes/productRoutes.js';
@@ -46,10 +48,24 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
 
+app.use(cookieParser());
+
+const MongoDBSessionStore = MongoDBStore(session);
+
+const store = new MongoDBSessionStore({
+    uri: process.env.MONGO_URL,
+    collection: "session",
+});
+
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    store: store,
+    cookie: { 
+        secure: false, 
+        maxAge: 60000
+    }
 }));
 
 app.use((req, res, next) => {
