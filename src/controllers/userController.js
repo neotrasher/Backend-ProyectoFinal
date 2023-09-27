@@ -1,15 +1,17 @@
 import userModel from '../models/user.models.js';
+import bcrypt from 'bcrypt';
 
 export const showLogin = (req, res) => {
-    if (req.session.user) {
+    if (req.user) {
         res.redirect('/');
     } else {
-        res.render('login');
+        let errorMessage = req.query.error;
+        res.render('login', { error: errorMessage});
     }
 };
 
 export const showRegister = (req, res) => {
-    if (req.session.user) {
+    if (req.user) {
         res.redirect('/');
     } else {
         res.render('register');
@@ -24,25 +26,32 @@ export const postRegister = async (req, res) => {
         return res.render('register', { error: 'El correo electrónico ya está registrado' });
     }
 
-    const user = new userModel({ email, password, fullname, age });
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = new userModel({ email, password: hashedPassword, fullname, age });
     await user.save();
 
-    req.session.user = user;
-    res.cookie('userSession', user._id, { signed: true });
     res.redirect('/');
 };
 
-export const postLogin = async (req, res) => {
-    const { email, password } = req.body;
-    const user = await userModel.findOne({ email }).exec();
-    if (user && password === user.password) {
-        req.session.user = user;
-        res.cookie('userSession', user._id, { signed: true });
-        res.redirect('/');
-    } else {
-        res.render('login', { error: 'Usuario o contraseña incorrectos' });
-    }
-};
+// export const postLogin = async (req, res) => {
+//     const { email, password } = req.body;
+//     const user = await userModel.findOne({ email }).exec();
+//     if (user && await bcrypt.compare(password, user.password)) {
+//         req.session.user = user;
+//         req.session.save(err => {
+//             if (err) {
+//                 console.log(err);
+//                 return;
+//             }
+//             res.cookie('userSession', user._id, { signed: true });
+//             res.redirect('/');
+//         });
+//     } else {
+//         res.render('login', { error: 'Usuario o contraseña incorrectos' });
+//     }
+// };
+
 
 export const getLogout = (req, res) => {
     req.session.destroy((err) => {

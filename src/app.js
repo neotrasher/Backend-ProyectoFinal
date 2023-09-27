@@ -15,6 +15,8 @@ import productModel from './models/products.models.js';
 import messageModel from './models/messages.models.js';
 import userRoutes from './routes/userRoutes.js';
 import { renderProducts } from './controllers/productController.js';
+import passport from 'passport';
+import setupPassport from './config/passport.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -37,7 +39,11 @@ db.once('open', () => {
 app.engine('handlebars', engine({
     defaultLayout: 'main',
     layoutsDir: path.join(__dirname, 'views/layouts'),
-    partialsDir: path.join(__dirname, 'views/partials')
+    partialsDir: path.join(__dirname, 'views/partials'),
+    runtimeOptions: {
+        allowProtoPropertiesByDefault: true,
+        allowProtoMethodsByDefault: true,
+    },
 }));
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
@@ -68,19 +74,28 @@ app.use(session({
     }
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+setupPassport();
+
 app.use((req, res, next) => {
-    res.locals.user = req.session.user;
+    res.locals.user = req.user;
     next();
 });
+
+app.use('/users', userRoutes);
 
 app.get('/', renderProducts);
 app.use('/api/products', productRoutes);
 app.use('/api/carts', cartRoutes);
 
-app.use('/users', userRoutes);
-
 app.get('/users/profile', (req, res) => {
-    res.render('profile', { user: req.session.user });
+    if (req.user) {
+        res.render('profile', { user: req.user.toObject() });
+    } else {
+        res.redirect('/users/login');
+    }
 });
 
 app.get('/realtimeproducts', (req, res) => {

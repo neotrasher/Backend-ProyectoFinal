@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
-  fullname: { type: String, required: true },  
-  age: { type: Number, required: true },      
+  fullname: { type: String, required: true },
+  age: { type: Number, required: true },
   email: {
     type: String,
     required: true,
@@ -12,6 +12,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  githubId: { 
+    type: String,
+    unique: true,
+    sparse: true
+  },
+  username: String,
   role: {
     type: String,
     enum: ['admin', 'usuario'],
@@ -24,3 +30,4 @@ const userSchema = new mongoose.Schema({
 const userModel = mongoose.model('User', userSchema);
 
 export default userModel;
+
