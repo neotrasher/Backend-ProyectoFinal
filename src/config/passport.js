@@ -25,24 +25,26 @@ const setupPassport = () => {
     passport.use(new GitHubStrategy({
         clientID: process.env.GITHUB_CLIENT_ID,
         clientSecret: process.env.GITHUB_CLIENT_SECRET,
-        callbackURL: "http://localhost:8080/users/github/callback"
+        callbackURL: process.env.CALLBACK_URL
     },
         async function (accessToken, refreshToken, profile, done) {
+            const { id, username, emails } = profile;
             try {
-                let user = await userModel.findOne({ githubId: profile.id });
+                const user = await userModel.findOne({ githubId: id });
 
                 if (!user) {
-                    user = new userModel({
-                        githubId: profile.id,
-                        fullname: profile.username || 'Nombre por defecto',
-                        email: profile.emails ? profile.emails[0].value : 'default@email.com',
+                    const newUser = new userModel({
+                        githubId: id,
+                        fullname: username || 'Nombre por defecto',
+                        email: emails ? emails[0].value : 'default@email.com',
                         age: 18,
                         password: Math.random().toString(36).substring(7),
-                        username: profile.username,
+                        username: username,
                         role: 'usuario',
                     });
 
-                    await user.save();
+                    await newUser.save();
+                    return done(null, newUser);
                 }
 
                 return done(null, user);
