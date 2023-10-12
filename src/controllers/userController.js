@@ -19,7 +19,7 @@ export const showRegister = (req, res) => {
 };
 
 export const postRegister = async (req, res) => {
-    const { email, password, fullname, age } = req.body;
+    const { email, password, first_name, last_name, age } = req.body; 
 
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
@@ -28,7 +28,7 @@ export const postRegister = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = new userModel({ email, password: hashedPassword, fullname, age });
+    const user = new userModel({ email, password: hashedPassword, first_name, last_name, age });
     await user.save();
 
     res.redirect('/');

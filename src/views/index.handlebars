@@ -14,10 +14,11 @@
         <h1 class="text-center mb-4">Bienvenido a mi E-commerce</h1>
 
         {{#if user}}
-        <h2 class="text-center text-success mb-4">Bienvenido, {{user.fullname}}!</h2>
+        <h2 class="text-center text-success mb-4">Bienvenido, {{user.first_name}} {{user.last_name}}!</h2>
         {{else}}
         <h2 class="text-center text-warning mb-4">Por favor, inicia sesión</h2>
         {{/if}}
+
 
         <table class="table table-striped">
             <thead class="thead-dark">

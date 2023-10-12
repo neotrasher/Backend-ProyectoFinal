@@ -35,12 +35,12 @@ const setupPassport = () => {
                 if (!user) {
                     const newUser = new userModel({
                         githubId: id,
-                        fullname: username || 'Nombre por defecto',
+                        first_name: username || 'Nombre por defecto',
                         email: emails ? emails[0].value : 'default@email.com',
                         age: 18,
                         password: Math.random().toString(36).substring(7),
-                        username: username,
-                        role: 'usuario',
+                        last_name: '', 
+                        role: 'user', 
                     });
 
                     await newUser.save();
@@ -53,7 +53,6 @@ const setupPassport = () => {
             }
         }
     ));
-
 
     passport.serializeUser((user, done) => {
         done(null, user.id);

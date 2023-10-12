@@ -1,30 +1,29 @@
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
-  fullname: { type: String, required: true },
-  age: { type: Number, required: true },
-  email: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  githubId: { 
-    type: String,
-    unique: true,
-    sparse: true
-  },
-  username: String,
-  role: {
-    type: String,
-    enum: ['admin', 'usuario'],
-    default: function () {
-      return this.email === 'adminCoder@coder.com' ? 'admin' : 'usuario';
-    }
-  }
+    first_name: { type: String },
+    last_name: { type: String },
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    age: { type: Number },
+    password: {
+        type: String,
+        required: true
+    },
+    cart: { type: mongoose.Types.ObjectId, ref: 'Carts' },
+    role: {
+        type: String,
+        default: 'user'
+    },
+    githubId: { 
+        type: String, 
+        unique: true, 
+        sparse: true 
+    },
+    username: String,
 });
 
 const userModel = mongoose.model('User', userSchema);

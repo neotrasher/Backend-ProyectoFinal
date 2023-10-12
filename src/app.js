@@ -68,8 +68,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: store,
-    cookie: { 
-        secure: false, 
+    cookie: {
+        secure: false,
         maxAge: 60000
     }
 }));
@@ -95,6 +95,22 @@ app.get('/users/profile', (req, res) => {
         res.render('profile', { user: req.user.toObject() });
     } else {
         res.redirect('/users/login');
+    }
+});
+
+app.get('/api/current_user', (req, res) => {
+    if (req.user) {
+        return res.send(req.user);
+    } else {
+        return res.status(401).send({ error: 'Usuario no autenticado.' });
+    }
+});
+
+app.get('/sessions/current', (req, res) => {
+    if (req.user) {
+        return res.render('current-user', { user: req.user });
+    } else {
+        return res.status(401).render('error', { error: 'Usuario no autenticado.' });
     }
 });
 
