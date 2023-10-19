@@ -39,8 +39,8 @@ const setupPassport = () => {
                         email: emails ? emails[0].value : 'default@email.com',
                         age: 18,
                         password: Math.random().toString(36).substring(7),
-                        last_name: '', 
-                        role: 'user', 
+                        last_name: '',
+                        role: 'user',
                     });
 
                     await newUser.save();
@@ -60,7 +60,7 @@ const setupPassport = () => {
 
     passport.deserializeUser(async (id, done) => {
         try {
-            const user = await userModel.findById(id);
+            const user = await userModel.findById(id).select('-password');
             done(null, user);
         } catch (err) {
             done(err);

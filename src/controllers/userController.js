@@ -6,7 +6,7 @@ export const showLogin = (req, res) => {
         res.redirect('/');
     } else {
         let errorMessage = req.query.error;
-        res.render('login', { error: errorMessage});
+        res.render('login', { error: errorMessage });
     }
 };
 
@@ -18,8 +18,8 @@ export const showRegister = (req, res) => {
     }
 };
 
-export const postRegister = async (req, res) => {
-    const { email, password, first_name, last_name, age } = req.body; 
+export const postRegister = async (req, res, next) => {
+    const { email, password, first_name, last_name, age } = req.body;
 
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
@@ -31,27 +31,13 @@ export const postRegister = async (req, res) => {
     const user = new userModel({ email, password: hashedPassword, first_name, last_name, age });
     await user.save();
 
-    res.redirect('/');
+    req.logIn(user, (err) => {
+        if (err) {
+            return next(err);
+        }
+        return res.redirect('/');
+    });
 };
-
-// export const postLogin = async (req, res) => {
-//     const { email, password } = req.body;
-//     const user = await userModel.findOne({ email }).exec();
-//     if (user && await bcrypt.compare(password, user.password)) {
-//         req.session.user = user;
-//         req.session.save(err => {
-//             if (err) {
-//                 console.log(err);
-//                 return;
-//             }
-//             res.cookie('userSession', user._id, { signed: true });
-//             res.redirect('/');
-//         });
-//     } else {
-//         res.render('login', { error: 'Usuario o contraseña incorrectos' });
-//     }
-// };
-
 
 export const getLogout = (req, res) => {
     req.session.destroy((err) => {
