@@ -1,6 +1,6 @@
 import express from 'express';
 import { getProducts, getProductById, addProduct, updateProduct, deleteProduct } from '../controllers/productController.js';
-import { isAdmin, isAuthenticated } from '../controllers/authMiddleware.js'; 
+import { isAdmin, isAuthenticated } from '../controllers/authController.js'; 
 const router = express.Router();
 
 router.get('/', getProducts);

@@ -10,7 +10,7 @@ import {
     updateCart,
     purchaseCart 
 } from '../controllers/cartController.js';
-import { isAuthenticated } from '../controllers/authMiddleware.js';   
+import { isAuthenticated } from '../controllers/authController.js';   
 
 const router = express.Router();
 

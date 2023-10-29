@@ -1,4 +1,3 @@
-import Product from '../models/products.models.js';
 import Cart from '../models/carts.models.js';
 import Ticket from "../models/ticket.models.js";
 
