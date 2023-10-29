@@ -1,4 +1,6 @@
+import Product from '../models/products.models.js';
 import Cart from '../models/carts.models.js';
+import Ticket from "../models/ticket.models.js";
 
 
 export const createCart = async (req, res) => {
@@ -12,6 +14,10 @@ export const createCart = async (req, res) => {
 
 export const addProductToCart = async (req, res) => {
     try {
+        if (req.user.role === 'admin') {
+            return res.status(403).json({ message: 'Los administradores no pueden agregar productos al carrito.' });
+        }
+
         const cartId = req.params.cid;
         const productId = req.params.pid;
         const { quantity } = req.body;
@@ -75,6 +81,9 @@ export const getProductsInCart = async (req, res) => {
 
 export const updateCart = async (req, res) => {
     try {
+        if (req.user.role === 'admin') {
+            return res.status(403).json({ message: 'Los administradores no pueden actualizar productos al carrito.' });
+        }
         const cartId = req.params.cid;
         const updatedCartData = req.body;
 
@@ -96,6 +105,10 @@ export const updateCart = async (req, res) => {
 
 export const updateProductQuantityInCart = async (req, res) => {
     try {
+        if (req.user.role === 'admin') {
+            return res.status(403).json({ message: 'Los administradores no pueden actualizar productos al carrito.' });
+        }
+
         const cartId = req.params.cid;
         const productId = req.params.pid;
         const { quantity } = req.body;
@@ -118,6 +131,10 @@ export const updateProductQuantityInCart = async (req, res) => {
 
 export const deleteProductFromCart = async (req, res) => {
     try {
+        if (req.user.role === 'admin') {
+            return res.status(403).json({ message: 'Los administradores no pueden eliminar productos del carrito.' });
+        }
+
         const cartId = req.params.cid;
         const productId = req.params.pid;
 
@@ -160,3 +177,50 @@ export const clearCart = async (req, res) => {
         res.status(404).json({ error: error.message });
     }
 };
+
+export const purchaseCart = async (req, res) => {
+    const cartId = req.params.cid;
+    const cart = await Cart.findById(cartId)
+        .populate('products.id_prod')
+        .exec();
+
+    if (!cart) {
+        return res.status(404).send({ error: 'Carrito no encontrado.' });
+    }
+
+    let totalAmount = 0;
+    const productsFailed = [];
+    let newTicket = {};
+
+    for (const cartProduct of cart.products) {
+        const product = cartProduct.id_prod;
+
+        if (cartProduct.quantity <= product.stock) {
+            product.stock -= cartProduct.quantity;
+            totalAmount += product.price * cartProduct.quantity;
+            await product.save();
+            cart.products.pull({ _id: cartProduct._id });
+        } else {
+            productsFailed.push(product);
+            cart.products.pull({ _id: cartProduct._id });
+        }
+    }
+    await cart.save();
+
+    if (totalAmount > 0) {
+        const code = 'TCKT-' + Date.now() + '-' + cart._id;
+        const purchaser = req.user.email;
+
+        const newTicket = new Ticket({
+            code: code,
+            amount: totalAmount,
+            purchaser: purchaser
+        });
+
+        await newTicket.save();
+    }
+
+    await cart.save();
+
+    res.json({ message: 'Compra finalizada.', ticket: newTicket, productsFailed });
+}

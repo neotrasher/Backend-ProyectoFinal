@@ -16,12 +16,12 @@ const userSchema = new mongoose.Schema({
     cart: { type: mongoose.Types.ObjectId, ref: 'Carts' },
     role: {
         type: String,
-        default: 'user'
+        enum: ['admin', 'usuario']
     },
-    githubId: { 
-        type: String, 
-        unique: true, 
-        sparse: true 
+    githubId: {
+        type: String,
+        unique: true,
+        sparse: true
     },
     username: String,
 });

@@ -8,18 +8,22 @@ import {
     deleteProductFromCart,
     clearCart,
     updateCart,
+    purchaseCart 
 } from '../controllers/cartController.js';
+import { isAuthenticated } from '../controllers/authMiddleware.js';   
 
 const router = express.Router();
 
 router.post('/', createCart);
-router.post('/:cid/products/:pid', addProductToCart);
+router.post('/:cid/products/:pid', isAuthenticated, addProductToCart);
 router.get('/:cid', getCartById);
 router.get('/:cid/products', getProductsInCart);
-router.put('/:cid', updateCart);
-router.put('/:cid/products/:pid', updateProductQuantityInCart);
-router.delete('/:cid/products/:pid', deleteProductFromCart);
-router.delete('/:cid', clearCart);
+router.put('/:cid', isAuthenticated, updateCart);
+router.put('/:cid/products/:pid', isAuthenticated, updateProductQuantityInCart);
+router.delete('/:cid/products/:pid', isAuthenticated, deleteProductFromCart);
+router.delete('/:cid', isAuthenticated, clearCart);
+router.post('/:cid/purchase', isAuthenticated, purchaseCart);
 
 export default router;
+
 

@@ -7,17 +7,13 @@ import MongoDBStore from 'connect-mongodb-session';
 import cookieParser from 'cookie-parser';
 import http from 'http';
 import { Server } from 'socket.io';
-import productRoutes from './routes/productRoutes.js';
-import cartRoutes from './routes/cartRoutes.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import productModel from './models/products.models.js';
-import messageModel from './models/messages.models.js';
-import userRoutes from './routes/userRoutes.js';
 import { renderProducts } from './controllers/productController.js';
 import passport from 'passport';
 import setupPassport from './config/passport.js';
 import setupSockets from './socket.js';
+import routes from './routes/index.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -85,11 +81,8 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/users', userRoutes);
-
-app.get('/', renderProducts);
-app.use('/api/products', productRoutes);
-app.use('/api/carts', cartRoutes);
+app.get('/', renderProducts); 
+app.use(routes);
 
 app.get('/users/profile', (req, res) => {
     if (req.user) {

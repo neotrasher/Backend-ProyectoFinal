@@ -4,11 +4,11 @@ import passport from 'passport';
 
 const router = express.Router();
 
+// Rutas para la interfaz de usuario
+
 router.get('/login', userController.showLogin); 
 router.get('/register', userController.showRegister); 
-
 router.post('/register', userController.postRegister); 
-
 router.get('/logout', userController.getLogout); 
 
 router.post('/login', (req, res, next) => {
@@ -28,12 +28,18 @@ router.post('/login', (req, res, next) => {
     })(req, res, next);
 });
 
-
 router.get('/github', passport.authenticate('github'));
 
 router.get('/github/callback', passport.authenticate('github', { 
     successRedirect: '/', 
     failureRedirect: '/users/login', 
 }));
+
+// Rutas para la API
+
+router.post('/api/register', userController.postRegisterAPI);
+router.post('/api/login', userController.postLoginAPI);
+router.get('/api/logout', userController.getLogoutAPI);
+router.get('/api/github', passport.authenticate('github'));
 
 export default router;
