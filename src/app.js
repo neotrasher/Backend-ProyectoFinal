@@ -14,6 +14,7 @@ import passport from 'passport';
 import setupPassport from './config/passport.js';
 import setupSockets from './socket.js';
 import routes from './routes/index.js'
+import errorHandler from './middlewares/errors/errorHandler.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -83,6 +84,7 @@ app.use((req, res, next) => {
 
 app.get('/', renderProducts); 
 app.use(routes);
+app.use(errorHandler);
 
 app.get('/users/profile', (req, res) => {
     if (req.user) {

@@ -1,5 +1,6 @@
 import Cart from '../models/carts.models.js';
 import Ticket from "../models/ticket.models.js";
+import { v4 as uuidv4 } from 'uuid';
 
 
 export const createCart = async (req, res) => {
@@ -207,7 +208,7 @@ export const purchaseCart = async (req, res) => {
     await cart.save();
 
     if (totalAmount > 0) {
-        const code = 'TCKT-' + Date.now() + '-' + cart._id;
+        const code = 'TCKT-' + uuidv4();
         const purchaser = req.user.email;
 
         const newTicket = new Ticket({

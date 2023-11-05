@@ -1,6 +1,9 @@
 import userModel from '../models/user.models.js';
 import bcrypt from 'bcrypt';
 import passport from 'passport';
+import CustomError from '../services/errors/CustomError.js';
+import EErrors from '../services/errors/enums.js';
+import { generateUserErrorInfo } from '../services/errors/info.js';
 
 export const showLogin = (req, res) => {
     if (req.user) {
@@ -16,6 +19,20 @@ export const showRegister = (req, res) => {
         res.redirect('/');
     } else {
         res.render('register');
+    }
+};
+
+const validateUserData = (user) => {
+    const camposRequeridos = ['email', 'password', 'first_name', 'last_name', 'age'];
+
+    for (let campo of camposRequeridos) {
+        if (!user[campo]) {
+            throw CustomError.createError({
+                name: 'ValidationError',
+                message: generateUserErrorInfo(user),
+                code: 400,
+            });
+        }
     }
 };
 
@@ -53,22 +70,28 @@ export const getLogout = (req, res) => {
     });
 };
 
-export const postRegisterAPI = async (req, res) => {
-    const { email, password, first_name, last_name, age } = req.body;
+export const postRegisterAPI = async (req, res, next) => {
+    try {
+        const { email, password, first_name, last_name, age } = req.body;
 
-    const existingUser = await userModel.findOne({ email });
-    if (existingUser) {
-        return res.status(400).json({ error: 'El correo electrónico ya está registrado' });
+        validateUserData(req.body);
+
+        const existingUser = await userModel.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ error: 'El correo electrónico ya está registrado' });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        let role = email === 'adminCoder@coder.com' ? 'admin' : 'usuario';
+
+        const user = new userModel({ email, password: hashedPassword, first_name, last_name, age });
+        await user.save();
+
+        res.status(201).json({ message: 'Usuario creado correctamente' });
+    } catch (error) {
+        next(error); 
     }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    let role = email === 'adminCoder@coder.com' ? 'admin' : 'usuario';
-
-    const user = new userModel({ email, password: hashedPassword, first_name, last_name, age });
-    await user.save();
-
-    res.status(201).json({ message: 'Usuario creado correctamente' });
 };
 
 export const postLoginAPI = async (req, res, next) => {

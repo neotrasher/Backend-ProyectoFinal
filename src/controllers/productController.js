@@ -1,4 +1,7 @@
 import Product from '../models/products.models.js';
+import CustomError from '../services/errors/CustomError.js';
+import EErrors from '../services/errors/enums.js';
+import { generateProductErrorInfo } from '../services/errors/info.js';
 
 export const getProducts = async (req, res) => {
     try {
@@ -51,13 +54,28 @@ export const getProductById = async (req, res) => {
     }
 };
 
-export const addProduct = async (req, res) => {
+const validateProductData = (product) => {
+    const camposRequeridos = ['title', 'price', 'category'];
+
+    for (let campo of camposRequeridos) {
+        if (!product[campo]) {
+            throw CustomError.createError({
+                name: EErrors.MISSING_REQUIRED_FIELDS.name,
+                message: generateProductErrorInfo(product),
+                code: EErrors.MISSING_REQUIRED_FIELDS.code,
+            });
+        }
+    }
+}
+
+export const addProduct = async (req, res, next) => {
     try {
         const productData = req.body;
+        validateProductData(productData);
         const newProduct = await Product.create(productData);
         res.json(newProduct);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        next(error); 
     }
 };
 
@@ -106,12 +124,12 @@ export const renderProducts = async (req, res) => {
         };
         const result = await Product.paginate({}, options);
 
-        res.render('index', { 
-            products: result.docs, 
-            hasPrevPage: result.hasPrevPage, 
+        res.render('index', {
+            products: result.docs,
+            hasPrevPage: result.hasPrevPage,
             hasNextPage: result.hasNextPage,
             prevPage: result.prevPage,
-            nextPage: result.nextPage 
+            nextPage: result.nextPage
         });
     } catch (error) {
         console.error(error);
