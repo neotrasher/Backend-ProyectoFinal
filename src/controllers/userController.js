@@ -28,9 +28,9 @@ const validateUserData = (user) => {
     for (let campo of camposRequeridos) {
         if (!user[campo]) {
             throw CustomError.createError({
-                name: 'ValidationError',
+                name: EErrors.MISSING_REQUIRED_FIELDS.name,
                 message: generateUserErrorInfo(user),
-                code: 400,
+                code: EErrors.MISSING_REQUIRED_FIELDS.code,
             });
         }
     }
