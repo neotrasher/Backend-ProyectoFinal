@@ -2,6 +2,7 @@ import Product from '../models/products.models.js';
 import CustomError from '../services/errors/CustomError.js';
 import EErrors from '../services/errors/enums.js';
 import { generateProductErrorInfo } from '../services/errors/info.js';
+import Logger from '../services/logger.js'
 
 export const getProducts = async (req, res) => {
     try {
@@ -132,7 +133,7 @@ export const renderProducts = async (req, res) => {
             nextPage: result.nextPage
         });
     } catch (error) {
-        console.error(error);
+        Logger.error(error);
         res.status(500).send('Error al obtener los productos');
     }
 };

@@ -1,15 +1,16 @@
 import productModel from './models/products.models.js';
+import Logger from './services/logger.js';
 
 const setupSockets = (io) => {
     io.on('connection', (socket) => {
-        console.log('Cliente conectado');
+        Logger.info('Cliente conectado')
 
         socket.on('createProduct', async (productData) => {
             try {
                 const newProduct = await productModel.create(productData);
                 io.emit('productCreated', newProduct);
             } catch (error) {
-                console.error("Error al crear el producto:", error);
+                Logger.error("Error al crear el producto: " + error);
             }
         });
 
@@ -18,7 +19,7 @@ const setupSockets = (io) => {
                 await productModel.findByIdAndDelete(productId);
                 io.emit('productDeleted', productId);
             } catch (error) {
-                console.error("Error al eliminar el producto:", error);
+                Logger.error("Error al eliminar el producto:", + error);
             }
         });
 
@@ -32,7 +33,7 @@ const setupSockets = (io) => {
                 );
                 io.emit('productUpdated', updatedProduct);
             } catch (error) {
-                console.error("Error al actualizar el producto:", error);
+                Logger.error("Error al actualizar el producto: " + error);
             }
         });
     });

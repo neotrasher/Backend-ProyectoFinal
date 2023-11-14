@@ -1,0 +1,10 @@
+{"level":"warn","message":"Intento de acceso no autorizado a recurso de administradores","timestamp":"2023-11-14T19:06:38.014Z"}
+{"level":"warn","message":"Intento de acceso no autorizado a recurso de administradores","timestamp":"2023-11-14T19:18:40.251Z"}
+{"level":"warn","message":"Intento de acceso no autorizado a recurso de administradores","timestamp":"2023-11-14T19:24:12.043Z"}
+{"level":"warn","message":"Intento de acceso no autorizado a recurso de administradores","timestamp":"2023-11-14T19:24:37.553Z"}
+{"level":"fatal","message":"Este es un mensaje fatal","timestamp":"2023-11-14T19:25:27.212Z"}
+{"level":"error","message":"Este es un mensaje de error","timestamp":"2023-11-14T19:25:27.213Z"}
+{"level":"warn","message":"Este es un mensaje de advertencia","timestamp":"2023-11-14T19:25:27.213Z"}
+{"level":"warn","message":"Intento de acceso no autenticado","timestamp":"2023-11-14T19:27:49.301Z"}
+{"level":"warn","message":"Intento de acceso no autorizado a recurso de administradores","timestamp":"2023-11-14T19:30:02.859Z"}
+{"level":"error","message":"One or more properties were incomplete or not valid.\n    List of required properties:\n    * title : needs to be a String, received undefined\n    * price : needs to be a Number, received 19.99\n    * category : needs to be a String, received Electrónica","timestamp":"2023-11-14T19:30:22.709Z"}

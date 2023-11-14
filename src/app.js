@@ -15,6 +15,7 @@ import setupPassport from './config/passport.js';
 import setupSockets from './socket.js';
 import routes from './routes/index.js'
 import errorHandler from './middlewares/errors/errorHandler.js'
+import Logger from './services/logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -29,9 +30,12 @@ mongoose.connect(process.env.MONGO_URL, {
 
 const db = mongoose.connection;
 
-db.on('error', console.error.bind(console, 'Error de conexión a MongoDB:'));
+db.on('error', (error) => {
+    Logger.error('Error de conexión a MongoDB: ' + error);
+});
+
 db.once('open', () => {
-    console.log('Conexión exitosa a MongoDB.');
+    Logger.info('Conexión exitosa a MongoDB.');
 });
 
 app.engine('handlebars', engine({
@@ -118,7 +122,7 @@ const io = new Server(server, {
 setupSockets(io);
 
 server.listen(port, () => {
-    console.log(`Servidor escuchando en el puerto ${port}`);
+    Logger.info(`Servidor escuchando en el puerto ${port}`);
 });
 
 export { io };
