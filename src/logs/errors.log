@@ -40,3 +40,4 @@
 {"level":"error","message":"Intento de restablecimiento de contraseña con token inválido o expirado.","timestamp":"2023-11-22T21:04:06.374Z"}
 {"level":"error","message":"Intento de restablecimiento de contraseña con token inválido o expirado.","timestamp":"2023-11-22T21:13:05.134Z"}
 {"level":"warn","message":"Intento de acceso no autenticado","timestamp":"2023-11-22T22:01:31.657Z"}
+{"level":"warn","message":"Intento de acceso no autenticado","timestamp":"2023-11-22T22:10:18.269Z"}
