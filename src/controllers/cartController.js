@@ -211,9 +211,14 @@ export const purchaseCart = async (req, res) => {
         const code = 'TCKT-' + uuidv4();
         const purchaser = req.user.email;
 
+        let finalAmount = totalAmount;
+        if (req.user.role === 'premium') {
+          finalAmount = totalAmount * 0.87; 
+        }
+
         const newTicket = new Ticket({
             code: code,
-            amount: totalAmount,
+            amount: finalAmount,
             purchaser: purchaser
         });
 

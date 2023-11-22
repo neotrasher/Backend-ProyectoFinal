@@ -1,6 +1,7 @@
 import express from 'express';
 import * as userController from '../controllers/userController.js';
 import passport from 'passport';
+import { recoveryEmail } from '../config/nodemailer.js';
 
 const router = express.Router();
 
@@ -41,5 +42,7 @@ router.post('/api/register', userController.postRegisterAPI);
 router.post('/api/login', userController.postLoginAPI);
 router.get('/api/logout', userController.getLogoutAPI);
 router.get('/api/github', passport.authenticate('github'));
+router.post('/password_recovery', userController.postPasswordRecovery);
+router.post('/reset_password/:token', userController.postResetPassword);
 
 export default router;

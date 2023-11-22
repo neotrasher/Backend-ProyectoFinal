@@ -8,3 +8,35 @@
 {"level":"warn","message":"Intento de acceso no autenticado","timestamp":"2023-11-14T19:27:49.301Z"}
 {"level":"warn","message":"Intento de acceso no autorizado a recurso de administradores","timestamp":"2023-11-14T19:30:02.859Z"}
 {"level":"error","message":"One or more properties were incomplete or not valid.\n    List of required properties:\n    * title : needs to be a String, received undefined\n    * price : needs to be a Number, received 19.99\n    * category : needs to be a String, received Electrónica","timestamp":"2023-11-14T19:30:22.709Z"}
+{"level":"fatal","message":"Este es un mensaje fatal","timestamp":"2023-11-22T19:04:57.346Z"}
+{"level":"error","message":"Este es un mensaje de error","timestamp":"2023-11-22T19:04:57.347Z"}
+{"level":"warn","message":"Este es un mensaje de advertencia","timestamp":"2023-11-22T19:04:57.348Z"}
+{"level":"error","message":"Intento de restablecimiento de contraseña para correo electrónico no registrado.","timestamp":"2023-11-22T19:07:29.802Z"}
+{"level":"error","message":"Error en postPasswordRecovery: crypto is not defined","timestamp":"2023-11-22T19:07:51.193Z"}
+{"level":"error","message":"crypto is not defined","timestamp":"2023-11-22T19:07:51.194Z"}
+{"level":"error","message":"Error en postPasswordRecovery: recoveryEmail is not defined","timestamp":"2023-11-22T19:09:37.095Z"}
+{"level":"error","message":"recoveryEmail is not defined","timestamp":"2023-11-22T19:09:37.097Z"}
+{"level":"error","message":"Error al enviar el correo","timestamp":"2023-11-22T19:12:44.205Z"}
+{"level":"error","message":"Error al enviar el correo","timestamp":"2023-11-22T19:13:40.288Z"}
+{"level":"error","message":"Error al enviar el correo","timestamp":"2023-11-22T19:13:59.185Z"}
+{"level":"error","message":"Error al enviar el correo","timestamp":"2023-11-22T19:16:28.619Z"}
+{"level":"error","message":"Intento de restablecimiento de contraseña para correo electrónico no registrado.","timestamp":"2023-11-22T19:17:40.676Z"}
+{"level":"error","message":"Error al enviar el correo \nError: Invalid login: 535-5.7.8 Username and Password not accepted. Learn more at\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials bd10-20020a056808220a00b003b83edb8a89sm33350oib.2 - gsmtp","timestamp":"2023-11-22T19:19:48.130Z"}
+{"level":"error","message":"Error al enviar el correo \nError: Invalid login: 535-5.7.8 Username and Password not accepted. Learn more at\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials eh17-20020a0568200c1100b0058a0809ea25sm33805oob.21 - gsmtp","timestamp":"2023-11-22T19:21:14.204Z"}
+{"level":"error","message":"Error al enviar el correo \nError: Invalid login: 535-5.7.8 Username and Password not accepted. Learn more at\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials lc6-20020a056871418600b001ea7e2adbc2sm66526oab.1 - gsmtp","timestamp":"2023-11-22T19:24:04.061Z"}
+{"level":"error","message":"Error al enviar el correo \nError: Invalid login: 535-5.7.8 Username and Password not accepted. Learn more at\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials bm47-20020a0568081aaf00b003b83b77e6b0sm36193oib.49 - gsmtp","timestamp":"2023-11-22T19:39:47.190Z"}
+{"level":"error","message":"Error al enviar el correo \nError: Invalid login: 535-5.7.8 Username and Password not accepted. Learn more at\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials d13-20020a4aeb8d000000b0057327cecdd8sm40911ooj.10 - gsmtp","timestamp":"2023-11-22T19:42:25.430Z"}
+{"level":"error","message":"Error al enviar el correo \nError: Invalid login: 535-5.7.8 Username and Password not accepted. Learn more at\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials h6-20020a4ab446000000b0057b8baf00bbsm38911ooo.22 - gsmtp","timestamp":"2023-11-22T19:44:38.621Z"}
+{"level":"error","message":"Error al enviar el correo \nError: Invalid login: 535-5.7.8 Username and Password not accepted. Learn more at\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials he5-20020a056870798500b001efb46a3e64sm70426oab.56 - gsmtp","timestamp":"2023-11-22T19:49:23.984Z"}
+{"level":"error","message":"Error al enviar el correo \nError: Invalid login: 535-5.7.8 Username and Password not accepted. Learn more at\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials xa5-20020a0568707f0500b001f5daf6ab9bsm75585oab.15 - gsmtp","timestamp":"2023-11-22T19:52:40.151Z"}
+{"level":"error","message":"Error al enviar el correo \nError: Invalid login: 535-5.7.8 Username and Password not accepted. Learn more at\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials gb25-20020a056870671900b001f006088c58sm76872oab.26 - gsmtp","timestamp":"2023-11-22T19:55:31.405Z"}
+{"level":"error","message":"Error al enviar el correo \nError: Invalid login: 535-5.7.8 Username and Password not accepted. Learn more at\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials d22-20020a0568301b7600b006b9443ce478sm48448ote.27 - gsmtp","timestamp":"2023-11-22T19:58:15.749Z"}
+{"level":"error","message":"Error al enviar el correo \nError: Invalid login: 534-5.7.9 Application-specific password required. Learn more at\n534 5.7.9  https://support.google.com/mail/?p=InvalidSecondFactor u22-20020a4ac996000000b005840989d13bsm41500ooq.44 - gsmtp","timestamp":"2023-11-22T20:01:01.716Z"}
+{"level":"error","message":"Error al enviar el correo \nError: Invalid login: 535-5.7.8 Username and Password not accepted. Learn more at\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials k23-20020a056830169700b006d6400f94bfsm51912otr.18 - gsmtp","timestamp":"2023-11-22T20:06:44.153Z"}
+{"level":"error","message":"Intento de restablecimiento de contraseña con token inválido o expirado.","timestamp":"2023-11-22T20:54:42.735Z"}
+{"level":"error","message":"Intento de restablecimiento de contraseña con token inválido o expirado.","timestamp":"2023-11-22T20:54:56.217Z"}
+{"level":"error","message":"Intento de restablecimiento de contraseña con token inválido o expirado.","timestamp":"2023-11-22T20:55:23.584Z"}
+{"level":"error","message":"Intento de restablecimiento de contraseña con token inválido o expirado.","timestamp":"2023-11-22T20:56:22.503Z"}
+{"level":"error","message":"Intento de restablecimiento de contraseña con token inválido o expirado.","timestamp":"2023-11-22T21:04:06.374Z"}
+{"level":"error","message":"Intento de restablecimiento de contraseña con token inválido o expirado.","timestamp":"2023-11-22T21:13:05.134Z"}
+{"level":"warn","message":"Intento de acceso no autenticado","timestamp":"2023-11-22T22:01:31.657Z"}

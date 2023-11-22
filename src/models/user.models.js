@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
     cart: { type: mongoose.Types.ObjectId, ref: 'Carts' },
     role: {
         type: String,
-        enum: ['admin', 'usuario']
+        enum: ['admin', 'usuario', 'premium']
     },
     githubId: {
         type: String,
@@ -24,6 +24,8 @@ const userSchema = new mongoose.Schema({
         sparse: true
     },
     username: String,
+    passwordResetToken: String, 
+    passwordResetExpires: Date, 
 });
 
 const userModel = mongoose.model('User', userSchema);

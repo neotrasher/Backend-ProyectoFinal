@@ -4,6 +4,9 @@ import passport from 'passport';
 import CustomError from '../services/errors/CustomError.js';
 import EErrors from '../services/errors/enums.js';
 import { generateUserErrorInfo } from '../services/errors/info.js';
+import Logger from '../services/logger.js';
+import crypto from 'crypto';
+import { recoveryEmail } from '../config/nodemailer.js';
 
 export const showLogin = (req, res) => {
     if (req.user) {
@@ -119,4 +122,55 @@ export const getLogoutAPI = (req, res) => {
         res.clearCookie(req.app.get('cookieName'));
         res.status(200).json({ message: 'Sesión cerrada con éxito' });
     });
+};
+
+export const postPasswordRecovery = async (req, res, next) => {
+    try {
+        const user = await userModel.findOne({ email: req.body.email });
+        if (!user) {
+            Logger.error('Intento de restablecimiento de contraseña para correo electrónico no registrado.');
+            return res.status(404).json({ error: 'No existe usuario con ese correo electrónico' });
+        }
+
+        const token = crypto.randomBytes(20).toString('hex');
+        user.passwordResetToken = token;
+        user.passwordResetExpires = Date.now() + 3600000; 
+        await user.save();
+
+        const link = `http://localhost:8080/reset_password/${token}`;
+
+        recoveryEmail(user.email, link);
+
+        res.status(200).json({ message: 'Correo de restablecimiento enviado' });
+    } catch (error) {
+        Logger.error('Error en postPasswordRecovery: ' + error.message);
+        next(error);
+    }
+};
+
+export const postResetPassword = async (req, res, next) => {
+    try {
+        const user = await userModel.findOne({ passwordResetToken: req.params.token, passwordResetExpires: { $gt: Date.now() } });
+        if (!user) {
+            Logger.error('Intento de restablecimiento de contraseña con token inválido o expirado.');
+            return res.status(400).json({ error: 'Token inválido o expirado. Solicita un nuevo correo de restablecimiento.' });
+        }
+
+        const newPassword = req.body.password;
+        const oldPasswordMatch = await bcrypt.compare(newPassword, user.password);
+
+        if (oldPasswordMatch) {
+            return res.status(400).json({ error: 'No puedes usar la misma contraseña. Ingresa una contraseña diferente.' });
+        }
+
+        user.password = await bcrypt.hash(newPassword, 10);
+        user.passwordResetToken = undefined;
+        user.passwordResetExpires = undefined;
+        await user.save();
+
+        res.status(200).json({ message: 'Tu contraseña ha sido reestablecida' });
+    } catch (error) {
+        Logger.error('Error en postResetPassword: ' + error.message);
+        next(error);
+    }
 };
