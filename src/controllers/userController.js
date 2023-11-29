@@ -7,6 +7,12 @@ import { generateUserErrorInfo } from '../services/errors/info.js';
 import Logger from '../services/logger.js';
 import crypto from 'crypto';
 import { recoveryEmail } from '../config/nodemailer.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const recoveryURL = process.env.RECOVERY_URL;
+const tokenExpirationTime = parseInt(process.env.TOKEN_EXP_TIME);
 
 export const showLogin = (req, res) => {
     if (req.user) {
@@ -134,10 +140,10 @@ export const postPasswordRecovery = async (req, res, next) => {
 
         const token = crypto.randomBytes(20).toString('hex');
         user.passwordResetToken = token;
-        user.passwordResetExpires = Date.now() + 3600000; 
+        user.passwordResetExpires = Date.now() + parseInt(tokenExpirationTime); 
         await user.save();
 
-        const link = `http://localhost:8080/reset_password/${token}`;
+        const link = `${recoveryURL}${token}`;
 
         recoveryEmail(user.email, link);
 

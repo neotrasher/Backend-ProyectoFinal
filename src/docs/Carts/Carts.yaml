@@ -1,0 +1,26 @@
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        _id :
+          type: string
+        products:
+          type: array
+
+paths:
+  /api/carts/{id}:
+    get:
+      summary: Obtiene un carrito por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID del carrito
+          schema:
+            type: string
+      responses:
+        200:
+          description: El carrito solicitado
+        404:
+          description: Carrito no encontrado

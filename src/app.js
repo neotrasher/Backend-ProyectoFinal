@@ -16,12 +16,29 @@ import setupSockets from './socket.js';
 import routes from './routes/index.js'
 import errorHandler from './middlewares/errors/errorHandler.js'
 import Logger from './services/logger.js';
+import swaggerUiExpress from 'swagger-ui-express';
+import swaggerJSDoc from 'swagger-jsdoc';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = 8080;
+
+const options = {
+    definition: {
+        openapi: "3.1.0",
+        info: {
+            title: "Documentacion eCommerce Backend",
+            version: "1.0.0",
+            description: "API eCommerce Backend",
+        },
+    },
+    apis: [`${__dirname}/docs/**/*.yaml`],
+};
+
+const specs = swaggerJSDoc(options);
+app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
@@ -86,7 +103,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get('/', renderProducts); 
+app.get('/', renderProducts);
 app.use(routes);
 app.use(errorHandler);
 

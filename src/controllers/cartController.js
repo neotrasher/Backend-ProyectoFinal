@@ -1,7 +1,11 @@
 import Cart from '../models/carts.models.js';
 import Ticket from "../models/ticket.models.js";
 import { v4 as uuidv4 } from 'uuid';
+import dotenv from 'dotenv';
 
+dotenv.config();
+
+const discount = parseFloat(process.env.DISCOUNT);
 
 export const createCart = async (req, res) => {
     try {
@@ -213,7 +217,7 @@ export const purchaseCart = async (req, res) => {
 
         let finalAmount = totalAmount;
         if (req.user.role === 'premium') {
-          finalAmount = totalAmount * 0.87; 
+          finalAmount = totalAmount * discount; 
         }
 
         const newTicket = new Ticket({
