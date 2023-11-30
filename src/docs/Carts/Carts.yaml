@@ -7,7 +7,14 @@ components:
           type: string
         products:
           type: array
-
+          items:
+            type: object
+            properties:
+              id_prod:
+                type: string
+              quantity:
+                type: number
+                
 paths:
   /api/carts/{id}:
     get:
@@ -22,5 +29,9 @@ paths:
       responses:
         200:
           description: El carrito solicitado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
         404:
           description: Carrito no encontrado
