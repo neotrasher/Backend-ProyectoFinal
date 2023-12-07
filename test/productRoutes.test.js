@@ -36,7 +36,7 @@ describe('Testing de productos en Tienda Online', function () {
                         "stock": 100,
                         "category": "Electrónica",
                         "status": true,
-                        "code": "PROD111",
+                        "code": `PROD${Date.now()}`,
                         "thumbnails": ["url_imagen_1", "url_imagen_2"]
                     });
                 console.log(response.body)
