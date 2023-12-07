@@ -9,6 +9,7 @@ const requester = supertest('http://localhost:8080');
 
 describe('Testing de productos en Tienda Online', function () {
     let adminToken;
+    let cookie;
 
     before(async function () {
         const adminCredentials = {
@@ -18,6 +19,8 @@ describe('Testing de productos en Tienda Online', function () {
 
         const response = await requester.post('/users/api/login').send(adminCredentials);
         console.log(response.body)
+        cookie = response.headers['set-cookie'];
+        console.log(cookie);
         adminToken = response.body.token;
     });
 
@@ -25,7 +28,7 @@ describe('Testing de productos en Tienda Online', function () {
         it('POST /api/products, se espera crear un nuevo producto', async function () {
             try {
                 const response = await requester.post('/api/products')
-                    .set("Cookie", `jwtCookie=${adminToken}`)
+                    .set("Cookie", cookie)
                     .send({
                         "title": "Producto de prueba",
                         "description": "Descripción del producto",
@@ -33,7 +36,7 @@ describe('Testing de productos en Tienda Online', function () {
                         "stock": 100,
                         "category": "Electrónica",
                         "status": true,
-                        "code": "PROD123",
+                        "code": "PROD111",
                         "thumbnails": ["url_imagen_1", "url_imagen_2"]
                     });
                 console.log(response.body)
@@ -44,7 +47,6 @@ describe('Testing de productos en Tienda Online', function () {
             }
         });
     });
-
 });
 
 
