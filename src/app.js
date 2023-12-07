@@ -142,4 +142,4 @@ server.listen(port, () => {
     Logger.info(`Servidor escuchando en el puerto ${port}`);
 });
 
-export { io };
+export { app, io };

@@ -55,16 +55,16 @@ export const postRegister = async (req, res, next) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    let role = email === 'adminCoder@coder.com' ? 'admin' : 'usuario';
+    let role = email === process.env.ADMIN_EMAIL ? 'admin' : 'usuario'; 
 
     const user = new userModel({ email, password: hashedPassword, first_name, last_name, age });
-    await user.save();
+    const savedUser = await user.save();  
 
     req.logIn(user, (err) => {
         if (err) {
             return next(err);
         }
-        return res.redirect('/');
+        return res.json(savedUser); 
     });
 };
 
@@ -92,12 +92,12 @@ export const postRegisterAPI = async (req, res, next) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        let role = email === 'adminCoder@coder.com' ? 'admin' : 'usuario';
+        let role = email === process.env.ADMIN_EMAIL ? 'admin' : 'usuario'; 
 
         const user = new userModel({ email, password: hashedPassword, first_name, last_name, age });
-        await user.save();
+        const savedUser = await user.save(); 
 
-        res.status(201).json({ message: 'Usuario creado correctamente' });
+        res.status(201).json({ message: 'Usuario creado correctamente', user: savedUser }); 
     } catch (error) {
         next(error); 
     }
@@ -115,6 +115,8 @@ export const postLoginAPI = async (req, res, next) => {
             if (err) {
                 return res.status(500).json({ error: err.message });
             }
+            user.role = user.email === process.env.ADMIN_EMAIL ? 'admin' : 'usuario';
+            
             return res.status(200).json({ message: 'Inicio de sesión exitoso' });
         });
     })(req, res, next);

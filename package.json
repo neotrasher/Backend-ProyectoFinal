@@ -6,12 +6,15 @@
   "main": "src/app.js",
   "scripts": {
     "dev": "set NODE_ENV=development && nodemon src/app.js",
-    "start": "set NODE_ENV=production && node src/app.js"
+    "start": "set NODE_ENV=production && node src/app.js",
+    "test": "mocha --timeout 5000 'test/**/*.test.js'",
+    "test:file": "mocha --timeout 5000"
   },
   "author": "Diego Urdaneta",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "chai-http": "^4.4.0",
     "connect-mongodb-session": "^3.1.1",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.3.1",
@@ -35,7 +38,10 @@
     "winston": "^3.11.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0",
+    "nodemon": "^3.0.1",
+    "supertest": "^6.3.3"
   },
   "keywords": []
 }

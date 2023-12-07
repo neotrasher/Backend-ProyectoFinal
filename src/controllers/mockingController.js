@@ -3,7 +3,7 @@ import Product from '../models/products.models.js';
 
 export const generateMockProducts = async (req, res) => {
     try {
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < 20; i++) {
             const productData = {
                 title: faker.commerce.productName(),
                 description: faker.commerce.productDescription(),
