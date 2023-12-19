@@ -1,9 +1,12 @@
 import express from 'express';
+import multer from 'multer';
 import * as userController from '../controllers/userController.js';
 import passport from 'passport';
 import { recoveryEmail } from '../config/nodemailer.js';
 
 const router = express.Router();
+
+const upload = multer({ dest: 'documents/' });
 
 // Rutas para la interfaz de usuario
 
@@ -44,5 +47,6 @@ router.get('/api/logout', userController.getLogoutAPI);
 router.get('/api/github', passport.authenticate('github'));
 router.post('/password_recovery', userController.postPasswordRecovery);
 router.post('/reset_password/:token', userController.postResetPassword);
+router.post('/api/:uid/documents', upload.array('documents'), userController.uploadDocuments); 
 
 export default router;

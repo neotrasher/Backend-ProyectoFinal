@@ -8,7 +8,8 @@ import {
     deleteProductFromCart,
     clearCart,
     updateCart,
-    purchaseCart 
+    purchaseCart,
+    deleteCart
 } from '../controllers/cartController.js';
 import { isAuthenticated } from '../controllers/authController.js';   
 
@@ -22,6 +23,7 @@ router.put('/:cid', isAuthenticated, updateCart);
 router.put('/:cid/products/:pid', isAuthenticated, updateProductQuantityInCart);
 router.delete('/:cid/products/:pid', isAuthenticated, deleteProductFromCart);
 router.delete('/:cid', isAuthenticated, clearCart);
+router.delete('/:cid/delete', isAuthenticated, deleteCart);
 router.post('/:cid/purchase', isAuthenticated, purchaseCart);
 
 export default router;

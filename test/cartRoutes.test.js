@@ -1,4 +1,4 @@
-import { describe, it, before } from 'mocha';
+import { describe, it, before, after } from 'mocha';
 import supertest from 'supertest';
 import { expect } from 'chai';
 import dotenv from 'dotenv';
@@ -8,8 +8,8 @@ dotenv.config();
 const requester = supertest('http://localhost:8080');
 
 describe('Testing del carrito en Tienda Online', function () {
-    let userToken;
     let cookie;
+    let cartId;
 
     before(async function () {
         const userCredentials = {
@@ -18,18 +18,18 @@ describe('Testing del carrito en Tienda Online', function () {
         };
 
         const response = await requester.post('/users/api/login').send(userCredentials);
-        console.log(response.body)
         cookie = response.headers['set-cookie'];
-        console.log(cookie);
-        userToken = response.body.token;
+
+        const cartResponse = await requester.post('/api/carts')
+            .set("Cookie", cookie);
+        cartId = cartResponse.body._id;
     });
 
     describe('Prueba de creación de carrito', function () {
         it('POST /api/carts, se espera crear un nuevo carrito', async function () {
             try {
-                const response = await requester.post('/api/carts')
-                    .set("Cookie", cookie)
-                console.log(response.body)
+                const response = await requester.get(`/api/carts/${cartId}`)
+                    .set("Cookie", cookie);
                 expect(response.body.products).to.be.empty;
             } catch (error) {
                 console.error("ERROR: ", error);
@@ -37,17 +37,16 @@ describe('Testing del carrito en Tienda Online', function () {
             }
         });
     });
+
     describe('Prueba de agregar producto al carrito', function () {
         it('POST /api/carts/:cid/products/:pid, se espera agregar un producto al carrito', async function () {
             try {
-                const cartId = '64fccc82e9a7594d3d208a7c'; 
                 const productId = '6570af827c822e4e0d634864'; 
                 const response = await requester.post(`/api/carts/${cartId}/products/${productId}`)
                     .set("Cookie", cookie)
                     .send({
                         quantity: 1
                     });
-                console.log(response.body)
                 expect(response.body.products).to.have.length(1);
             } catch (error) {
                 console.error("ERROR: ", error);
@@ -55,19 +54,22 @@ describe('Testing del carrito en Tienda Online', function () {
             }
         });
     });
-    
+
     describe('Prueba de compra del carrito', function () {
         it('POST /api/carts/:cid/purchase, se espera comprar el carrito', async function () {
             try {
-                const cartId = '64fccc82e9a7594d3d208a7c'; 
                 const response = await requester.post(`/api/carts/${cartId}/purchase`)
                     .set("Cookie", cookie);
-                console.log(response.body)
                 expect(response.body.message).to.equal('Compra finalizada.');
             } catch (error) {
                 console.error("ERROR: ", error);
                 throw error;
             }
         });
+    });
+
+    after(async function () {
+        await requester.delete(`/api/carts/${cartId}/delete`)
+            .set("Cookie", cookie);
     });
 });

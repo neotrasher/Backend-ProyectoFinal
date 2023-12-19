@@ -1,5 +1,10 @@
 import mongoose from 'mongoose';
 
+const fileSchema = new mongoose.Schema({
+    name: String,
+    reference: String,
+}, {_id: false});
+
 const userSchema = new mongoose.Schema({
     first_name: { type: String },
     last_name: { type: String },
@@ -26,6 +31,8 @@ const userSchema = new mongoose.Schema({
     username: String,
     passwordResetToken: String, 
     passwordResetExpires: Date, 
+    documents: [fileSchema], 
+    last_connection: Date,
 });
 
 const userModel = mongoose.model('User', userSchema);

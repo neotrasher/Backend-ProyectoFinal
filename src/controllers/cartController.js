@@ -233,3 +233,18 @@ export const purchaseCart = async (req, res) => {
 
     res.json({ message: 'Compra finalizada.', ticket: newTicket, productsFailed });
 }
+
+export const deleteCart = async (req, res) => {
+    try {
+        const cartId = req.params.cid;
+        const deletedCart = await Cart.findByIdAndDelete(cartId);
+
+        if (!deletedCart) {
+            return res.status(404).json({ error: 'Carrito no encontrado' });
+        }
+
+        res.json({ message: 'Carrito eliminado exitosamente.' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};

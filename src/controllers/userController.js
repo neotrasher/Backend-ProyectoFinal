@@ -111,11 +111,13 @@ export const postLoginAPI = async (req, res, next) => {
         if (!user) {
             return res.status(401).json({ error: 'Correo electrónico o contraseña incorrectos' });
         }
-        req.logIn(user, function (err) {
+        req.logIn(user, async function (err) {
             if (err) {
                 return res.status(500).json({ error: err.message });
             }
             user.role = user.email === process.env.ADMIN_EMAIL ? 'admin' : 'usuario';
+            user.last_connection = Date.now(); 
+            await user.save();
             
             return res.status(200).json({ message: 'Inicio de sesión exitoso' });
         });
@@ -123,9 +125,13 @@ export const postLoginAPI = async (req, res, next) => {
 };
 
 export const getLogoutAPI = (req, res) => {
-    req.session.destroy((err) => {
+    req.session.destroy(async (err) => {
         if (err) {
             return res.status(500).json({ error: err.message });
+        }
+        if (req.user) {
+            req.user.last_connection = Date.now();
+            await req.user.save();
         }
         res.clearCookie(req.app.get('cookieName'));
         res.status(200).json({ message: 'Sesión cerrada con éxito' });
@@ -182,3 +188,21 @@ export const postResetPassword = async (req, res, next) => {
         next(error);
     }
 };
+
+export async function uploadDocuments(req, res, next) {
+    try {
+        const userId = req.params.uid;
+        const newDocuments = req.files.map(file => ({
+            name: file.originalname,
+            reference: file.path,
+        }));
+
+        const user = await userModel.findById(userId);
+        user.documents.push(...newDocuments);
+        await user.save();
+
+        res.json({ message: 'Documento subido exitosamente' });
+    } catch (error) {
+        next(error);
+    }
+}

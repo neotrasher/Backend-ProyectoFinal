@@ -1,6 +1,6 @@
 {
   "type": "module",
-  "name": "documentacion",
+  "name": "uploaddocument",
   "version": "1.0.0",
   "description": "Express server for product management",
   "main": "src/app.js",
