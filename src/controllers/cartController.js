@@ -23,6 +23,7 @@ export const addProductToCart = async (req, res) => {
         }
 
         const cartId = req.params.cid;
+        console.log('Retrieved cartId: ' + cartId);
         const productId = req.params.pid;
         const { quantity } = req.body;
 

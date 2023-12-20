@@ -10,6 +10,37 @@
 </head>
 
 <body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+            <a class="navbar-brand" href="/">MagusbyLili</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    {{#if user}}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/users/profile">Perfil ({{user.first_name}} {{user.last_name}})</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/users/logout">Salir</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/cart/{{user.cartId}}">Carrito (<span id="cart-quantity">0</span>)</a>
+                        </li>
+                    {{else}}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/users/login">Iniciar Sesión</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/users/register">Registrarse</a>
+                        </li>
+                    {{/if}}
+                </ul>
+            </div>
+        </nav>
+    </header>
     <div class="container py-5">
         <h1 class="text-center mb-4">Bienvenido a mi E-commerce</h1>
 
@@ -18,7 +49,6 @@
         {{else}}
         <h2 class="text-center text-warning mb-4">Por favor, inicia sesión</h2>
         {{/if}}
-
 
         <table class="table table-striped">
             <thead class="thead-dark">
@@ -29,6 +59,8 @@
                     <th scope="col">Foto</th>
                     <th scope="col">Precio</th>
                     <th scope="col">Stock</th>
+                    <th scope="col">Cantidad en carrito</th>
+                    <th scope="col">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,6 +72,11 @@
                     <td><img src="https://prd.place/5" class="img-fluid" alt="product"></td>
                     <td>{{this.price}}</td>
                     <td>{{this.stock}}</td>
+                    <td><span id="product-{{this._id}}-quantity">0</span></td>
+                    <td>
+                        <button class="increase-quantity" data-id="{{this._id}}" data-cart="{{user.cartId}}">+</button>
+                        <button class="decrease-quantity" data-id="{{this._id}}" data-cart="{{user.cartId}}">-</button>
+                    </td>
                 </tr>
                 {{/each}}
             </tbody>
@@ -57,6 +94,47 @@
     </div>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.increase-quantity').click(function() {
+                const productId = $(this).data('id');
+                const cartId = $(this).data('cart');
+
+                $.ajax({
+                    url: '/carts/' + cartId + '/product/' + productId,
+                    type: 'POST',
+                    data: { quantity: 1 },
+                    success: function(response) {
+                        console.log(response);
+                        $('#product-' + productId + '-quantity').text(response.quantity);
+                        $('#cart-quantity').text(response.totalQuantity);
+                    },
+                    error: function(error) {
+                        console.error(error);
+                    }
+                });
+            });
+
+            $('.decrease-quantity').click(function() {
+                const productId = $(this).data('id');
+                const cartId = $(this).data('cart');
+
+                $.ajax({
+                    url: '/carts/' + cartId + '/product/' + productId,
+                    type: 'PUT',
+                    data: { quantity: -1 },
+                    success: function(response) {
+                        console.log(response);
+                        $('#product-' + productId + '-quantity').text(response.quantity);
+                        $('#cart-quantity').text(response.totalQuantity);
+                    },
+                    error: function(error) {
+                        console.error(error);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

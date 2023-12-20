@@ -98,7 +98,7 @@ export const postRegisterAPI = async (req, res, next) => {
 
         const user = new userModel({ email, password: hashedPassword, first_name, last_name, age });
         user.last_connection = Date.now();
-        
+
         const savedUser = await user.save();
 
         res.status(201).json({ message: 'Usuario creado correctamente', user: savedUser });
@@ -121,12 +121,22 @@ export const postLoginAPI = async (req, res, next) => {
             }
             user.role = user.email === process.env.ADMIN_EMAIL ? 'admin' : 'usuario';
             user.last_connection = Date.now();
+
+            let cart = await cart.findOne({ userId: user._id });
+            if (!cart) {
+                cart = await cart.create({ userId: user._id, products: [] });
+            }
+
+            req.session.cartId = cart._id;
+            console.log('Stored cartId: ' + req.session.cartId);
+
             await user.save();
 
             return res.status(200).json({ message: 'Inicio de sesión exitoso' });
         });
     })(req, res, next);
 };
+
 
 export const getCurrentSession = (req, res, next) => {
     if (req.user) {
