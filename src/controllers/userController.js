@@ -55,16 +55,16 @@ export const postRegister = async (req, res, next) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    let role = email === process.env.ADMIN_EMAIL ? 'admin' : 'usuario'; 
+    let role = email === process.env.ADMIN_EMAIL ? 'admin' : 'usuario';
 
     const user = new userModel({ email, password: hashedPassword, first_name, last_name, age });
-    const savedUser = await user.save();  
+    const savedUser = await user.save();
 
     req.logIn(user, (err) => {
         if (err) {
             return next(err);
         }
-        return res.json(savedUser); 
+        return res.json(savedUser);
     });
 };
 
@@ -92,14 +92,14 @@ export const postRegisterAPI = async (req, res, next) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        let role = email === process.env.ADMIN_EMAIL ? 'admin' : 'usuario'; 
+        let role = email === process.env.ADMIN_EMAIL ? 'admin' : 'usuario';
 
         const user = new userModel({ email, password: hashedPassword, first_name, last_name, age });
-        const savedUser = await user.save(); 
+        const savedUser = await user.save();
 
-        res.status(201).json({ message: 'Usuario creado correctamente', user: savedUser }); 
+        res.status(201).json({ message: 'Usuario creado correctamente', user: savedUser });
     } catch (error) {
-        next(error); 
+        next(error);
     }
 };
 
@@ -116,9 +116,9 @@ export const postLoginAPI = async (req, res, next) => {
                 return res.status(500).json({ error: err.message });
             }
             user.role = user.email === process.env.ADMIN_EMAIL ? 'admin' : 'usuario';
-            user.last_connection = Date.now(); 
+            user.last_connection = Date.now();
             await user.save();
-            
+
             return res.status(200).json({ message: 'Inicio de sesión exitoso' });
         });
     })(req, res, next);
@@ -148,7 +148,7 @@ export const postPasswordRecovery = async (req, res, next) => {
 
         const token = crypto.randomBytes(20).toString('hex');
         user.passwordResetToken = token;
-        user.passwordResetExpires = Date.now() + parseInt(tokenExpirationTime); 
+        user.passwordResetExpires = Date.now() + parseInt(tokenExpirationTime);
         await user.save();
 
         const link = `${recoveryURL}${token}`;
@@ -206,3 +206,26 @@ export async function uploadDocuments(req, res, next) {
         next(error);
     }
 }
+
+export const getUsers = async (req, res, next) => {
+    try {
+        const users = await userModel.find({}, 'name email role');
+        res.json(users);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const deleteInactiveUsers = async (req, res, next) => {
+    try {
+        const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
+        const users = await userModel.find({ last_connection: { $lt: twoDaysAgo } });
+        users.forEach(user => {
+            recoveryEmail(user.email);
+            user.remove();
+        });
+        res.json({ message: 'Usuarios inactivos eliminados y notificados.' });
+    } catch (error) {
+        next(error);
+    }
+};
