@@ -6,7 +6,7 @@ import EErrors from '../services/errors/enums.js';
 import { generateUserErrorInfo } from '../services/errors/info.js';
 import Logger from '../services/logger.js';
 import crypto from 'crypto';
-import { recoveryEmail } from '../config/nodemailer.js';
+import { recoveryEmail, deletionEmail } from '../config/nodemailer.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -58,6 +58,8 @@ export const postRegister = async (req, res, next) => {
     let role = email === process.env.ADMIN_EMAIL ? 'admin' : 'usuario';
 
     const user = new userModel({ email, password: hashedPassword, first_name, last_name, age });
+    user.last_connection = Date.now();
+
     const savedUser = await user.save();
 
     req.logIn(user, (err) => {
@@ -95,6 +97,8 @@ export const postRegisterAPI = async (req, res, next) => {
         let role = email === process.env.ADMIN_EMAIL ? 'admin' : 'usuario';
 
         const user = new userModel({ email, password: hashedPassword, first_name, last_name, age });
+        user.last_connection = Date.now();
+        
         const savedUser = await user.save();
 
         res.status(201).json({ message: 'Usuario creado correctamente', user: savedUser });
@@ -229,9 +233,9 @@ export const deleteInactiveUsers = async (req, res, next) => {
     try {
         const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
         const users = await userModel.find({ last_connection: { $lt: twoDaysAgo } });
-        users.forEach(user => {
-            recoveryEmail(user.email);
-            user.remove();
+        users.forEach(async user => {
+            deletionEmail(user.email);
+            await userModel.deleteOne({ _id: user._id });
         });
         res.json({ message: 'Usuarios inactivos eliminados y notificados.' });
     } catch (error) {
