@@ -1,0 +1,33 @@
+.accordion {
+    font-family: Roboto-Regular;
+    margin-top: 40px;
+}
+
+.accordion .accordion-body {
+    background-color: aliceblue;
+    text-align: justify;
+}
+
+.acercaDeMi {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 50px;
+    min-height: calc(100vh - 300px);
+    margin-bottom: 50px
+}
+
+.acercaDeMi>img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    margin-bottom: 30px;
+}
+
+.acercaDeMi .acercaDeMi-info {
+    color: #4A4848;
+    font-family: Roboto-Regular;
+    font-size: 16px;
+    text-align: justify;
+    max-width: 1000px;
+}

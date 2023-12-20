@@ -1,4 +1,5 @@
 import userModel from '../models/user.models.js';
+import Cart from '../models/carts.models.js';
 import bcrypt from 'bcrypt';
 import passport from 'passport';
 import CustomError from '../services/errors/CustomError.js';
@@ -60,6 +61,16 @@ export const postRegister = async (req, res, next) => {
     const user = new userModel({ email, password: hashedPassword, first_name, last_name, age });
     user.last_connection = Date.now();
 
+    let cart = await Cart.findOne({ userId: user._id });
+    if (!cart) {
+        cart = await Cart.create({ userId: user._id, products: [] });
+    }
+
+    user.cart = cart._id;
+    req.session.cartId = cart._id;
+
+    console.log('Stored cartId: ' + req.session.cartId);
+
     const savedUser = await user.save();
 
     req.logIn(user, (err) => {
@@ -69,6 +80,7 @@ export const postRegister = async (req, res, next) => {
         return res.json(savedUser);
     });
 };
+
 
 export const getLogout = (req, res) => {
     req.session.destroy((err) => {
@@ -98,7 +110,7 @@ export const postRegisterAPI = async (req, res, next) => {
 
         const user = new userModel({ email, password: hashedPassword, first_name, last_name, age });
         user.last_connection = Date.now();
-
+        
         const savedUser = await user.save();
 
         res.status(201).json({ message: 'Usuario creado correctamente', user: savedUser });
@@ -108,7 +120,7 @@ export const postRegisterAPI = async (req, res, next) => {
 };
 
 export const postLoginAPI = async (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
+    passport.authenticate('local', async (err, user, info) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
@@ -119,24 +131,22 @@ export const postLoginAPI = async (req, res, next) => {
             if (err) {
                 return res.status(500).json({ error: err.message });
             }
-            user.role = user.email === process.env.ADMIN_EMAIL ? 'admin' : 'usuario';
-            user.last_connection = Date.now();
 
-            let cart = await cart.findOne({ userId: user._id });
+            let cart = await Cart.findOne({ userId: user._id });
             if (!cart) {
-                cart = await cart.create({ userId: user._id, products: [] });
+                cart = await Cart.create({ userId: user._id, products: [] });
             }
 
-            req.session.cartId = cart._id;
-            console.log('Stored cartId: ' + req.session.cartId);
+            user.cart = cart;
 
+            user.role = user.email === process.env.ADMIN_EMAIL ? 'admin' : 'usuario';
+            user.last_connection = Date.now();
             await user.save();
 
-            return res.status(200).json({ message: 'Inicio de sesión exitoso' });
+            return res.status(200).json({ message: 'Inicio de sesión exitoso', user });
         });
     })(req, res, next);
 };
-
 
 export const getCurrentSession = (req, res, next) => {
     if (req.user) {

@@ -2,14 +2,12 @@ import 'dotenv/config'
 import mongoose from 'mongoose';
 import express from 'express';
 import session from 'express-session';
-import { engine } from 'express-handlebars';
 import MongoDBStore from 'connect-mongodb-session';
 import cookieParser from 'cookie-parser';
 import http from 'http';
 import { Server } from 'socket.io';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { renderProducts } from './controllers/productController.js';
 import passport from 'passport';
 import setupPassport from './config/passport.js';
 import setupSockets from './socket.js';
@@ -55,19 +53,7 @@ db.once('open', () => {
     Logger.info('Conexión exitosa a MongoDB.');
 });
 
-app.engine('handlebars', engine({
-    defaultLayout: 'main',
-    layoutsDir: path.join(__dirname, 'views/layouts'),
-    partialsDir: path.join(__dirname, 'views/partials'),
-    runtimeOptions: {
-        allowProtoPropertiesByDefault: true,
-        allowProtoMethodsByDefault: true,
-    },
-}));
-app.set('view engine', 'handlebars');
-app.set('views', path.join(__dirname, 'views'));
-
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, '../client/build')));
 
 app.use(express.json());
 
@@ -103,17 +89,8 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get('/', renderProducts);
-app.use(routes);
+app.use('/', routes);
 app.use(errorHandler);
-
-app.get('/users/profile', (req, res) => {
-    if (req.user) {
-        res.render('profile', { user: req.user.toObject() });
-    } else {
-        res.redirect('/users/login');
-    }
-});
 
 app.get('/api/current_user', (req, res) => {
     if (req.user) {
@@ -123,12 +100,8 @@ app.get('/api/current_user', (req, res) => {
     }
 });
 
-app.get('/sessions/current', (req, res) => {
-    if (req.user) {
-        return res.render('current-user', { user: req.user });
-    } else {
-        return res.status(401).render('error', { error: 'Usuario no autenticado.' });
-    }
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 
 const server = http.createServer(app);

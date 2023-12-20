@@ -1,0 +1,91 @@
+.contacto {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 300px;
+    padding: 1px;
+}
+
+.contacto .textContacto {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 40px;
+}
+
+.contacto .logoWhatsappContacto {
+    width: 56px;
+}
+
+.contacto .numeroTelefono {
+    text-decoration: none;
+    color: #4A4848;
+    font-size: 20px;
+}
+
+.contactoMain {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.contactoMain .taggbox {
+    width: 65vh;
+    padding: 20px;
+    margin-left: 200px;
+    margin-top: 30px;
+}
+
+@media (max-width: 1020px) {
+    .contactoMain .taggbox {
+        display: none;
+    }
+}
+
+.formulario {
+    color: #4A4848;
+    font-family: Roboto-Regular;
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    border-color: #4A4848;
+    margin-top: 50px;
+}
+
+.formulario .form-group {
+    padding: 5px;
+}
+
+.formulario .form-group .form-textarea {
+    width: 360px;
+    border-radius: 10px;
+    padding: 5px;
+    border-color: #4A4848;
+    border: solid;
+    background-color: aliceblue;
+}
+
+.formulario .form-group .form-input {
+    width: 360px;
+    height: 45px;
+    border-radius: 10px;
+    padding: 5px;
+    border-color: #4A4848;
+    border: solid;
+    background-color: aliceblue;
+}
+
+.formulario .form-buttongroup {
+    padding: 5px;
+}
+
+.formulario .form-buttongroup .form-button {
+    width: 360px;
+    height: 45px;
+    border-radius: 25px;
+    background-color: #E0B2DA;
+    font-weight: bold;
+    font-size: 16px;
+}

@@ -1,0 +1,33 @@
+.cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 32px;
+    overflow-x: hidden;
+}
+
+.cards .card-img-top:hover {
+    box-shadow: 0px 0px 6px rgb(24, 3, 3);
+    transform: scale(1.35);
+    transition: 0.6s;
+}
+
+.cards .card-title {
+    font-weight: bold;
+}
+
+.cards .btn {
+    font-weight: bold;
+    background-color: #4A4848;
+    color: aliceblue;
+}
+
+.cards .btn:hover {
+    background-color: aliceblue;
+    color: #4A4848;
+    font-weight: bold;
+    border: solid;
+    border-width: 0.5px;
+}
