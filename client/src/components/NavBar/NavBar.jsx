@@ -19,18 +19,18 @@ const Navbar = (props) => {
             <header className="headerInfo">
                 <nav className="navbarInfo">
                     <div className="container-fluid d-flex justify-content-around">
-                        <Link className="navbar-brand ms-5" to="https://www.instagram.com/magusbylili/" target="_blank">
+                        <a className="navbar-brand ms-5" href="https://www.instagram.com/magusbylili/" target="_blank" rel="noopener noreferrer">
                             <img className="logosNavbar" src={props.instagramUrl} alt="instagram" />
-                        </Link>
-                        <Link className="navbar-brand" to="https://www.facebook.com/magusbylili" target="_blank">
+                        </a>
+                        <a className="navbar-brand" href="https://www.facebook.com/magusbylili" target="_blank" rel="noopener noreferrer">
                             <img className="logosNavbar" src={props.facebookUrl} alt="facebook" />
-                        </Link>
+                        </a>
                         <span className="headerInfo col-6 d-none d-sm-none d-md-block text-center">
                             Productos hechos a mano, no olvides consultar los tiempos de envío.
                         </span>
-                        <Link to="https://wa.me/573154299368" target="_blank">
+                        <a href="https://wa.me/573154299368" target="_blank" rel="noopener noreferrer">
                             <img className="logosNavbar me-3" src={props.whatsappUrl} alt="whatsapp" />
-                        </Link>
+                        </a>
                         <Link to="">
                             <img className="logosNavbar me-3" src={props.userUrl} alt="usuario" />
                         </Link>
@@ -122,4 +122,3 @@ const Navbar = (props) => {
 };
 
 export default Navbar;
-

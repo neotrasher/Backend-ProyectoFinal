@@ -11,17 +11,22 @@ import Colecciones from './pages/Colecciones';
 import { CartProvider } from './context/CartContext'
 import Cart from './components/Cart/Cart'
 import OrderConfirmation from './components/OrderConfirmation/OrderConfirmation';
+import InstagramImage from './assets/img/instagram.png';
+import FacebookImage from './assets/img/facebook.png';
+import WhatsappImage from './assets/img/whatsapp.png';
+import UserImage from './assets/img/cuenta.png';
+import MagusLogoImage from './assets/img/maguslogo.png';
 
 function App() {
     return (
         <BrowserRouter>
             <CartProvider>
                 <NavBar
-                    instagramUrl="assets/img/instagram.png"
-                    facebookUrl="assets/img/facebook.png"
-                    whatsappUrl="assets/img/whatsapp.png"
-                    userUrl="assets/img/cuenta.png"
-                    magusLogo="assets/img/maguslogo.png"
+                    instagramUrl={InstagramImage}
+                    facebookUrl={FacebookImage}
+                    whatsappUrl={WhatsappImage}
+                    userUrl={UserImage}
+                    magusLogo={MagusLogoImage}
                 />
                 <Routes>
                     <Route path='/' element={<Homepage />} />
@@ -43,4 +48,3 @@ function App() {
 }
 
 export default App;
-
