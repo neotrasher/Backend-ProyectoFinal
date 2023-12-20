@@ -2,9 +2,14 @@ import React, { useState } from 'react';
 import './navbar.css';
 import CartWidget from '../CartWidget/CartWidget';
 import { Link } from 'react-router-dom';
+import AuthModal from '../AuthModal/AuthModal';
+import ProfileModal from '../ProfileModal/ProfileModal';
 
 const Navbar = (props) => {
+    const [user, setUser] = useState(null);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+    const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
     const handleMouseEnter = () => {
         setIsDropdownOpen(true);
@@ -12,6 +17,28 @@ const Navbar = (props) => {
 
     const handleMouseLeave = () => {
         setIsDropdownOpen(false);
+    };
+
+    const handleUserIconClick = (event) => {
+        event.preventDefault();
+        if (user) {
+            setIsProfileModalOpen(true);
+        } else {
+            setIsLoginModalOpen(true);
+        }
+    };
+
+    const handleLoginModalClose = () => {
+        setIsLoginModalOpen(false);
+    };
+
+    const handleProfileModalClose = () => {
+        setIsProfileModalOpen(false);
+    };
+
+    const handleLoginSuccess = (user) => {
+        setUser(user);
+        setIsLoginModalOpen(false);
     };
 
     return (
@@ -31,9 +58,13 @@ const Navbar = (props) => {
                         <a href="https://wa.me/573154299368" target="_blank" rel="noopener noreferrer">
                             <img className="logosNavbar me-3" src={props.whatsappUrl} alt="whatsapp" />
                         </a>
-                        <Link to="">
-                            <img className="logosNavbar me-3" src={props.userUrl} alt="usuario" />
-                        </Link>
+                        {user ? (
+                            <span>Hola, {user.first_name}</span>
+                        ) : (
+                            <Link to="" onClick={handleUserIconClick}>
+                                <img className="logosNavbar me-3" src={props.userUrl} alt="usuario" />
+                            </Link>
+                        )}
                         <CartWidget />
                     </div>
                 </nav>
@@ -117,6 +148,16 @@ const Navbar = (props) => {
                     </div>
                 </div>
             </nav>
+            <AuthModal
+                isOpen={isLoginModalOpen}
+                onRequestClose={handleLoginModalClose}
+                onLoginSuccess={handleLoginSuccess}
+            />
+            <ProfileModal
+                isOpen={isProfileModalOpen}
+                onRequestClose={handleProfileModalClose}
+                user={user}
+            />
         </div>
     );
 };

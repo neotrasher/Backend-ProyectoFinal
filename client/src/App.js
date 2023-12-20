@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import NavBar from './components/NavBar/NavBar';
 import ItemListContainer from './components/ItemListContainer/ItemListContainer';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -16,8 +16,34 @@ import FacebookImage from './assets/img/facebook.png';
 import WhatsappImage from './assets/img/whatsapp.png';
 import UserImage from './assets/img/cuenta.png';
 import MagusLogoImage from './assets/img/maguslogo.png';
+import AuthModal from './components/AuthModal/AuthModal';
+import ProfileModal from './components/ProfileModal/ProfileModal';
 
 function App() {
+    const [user, setUser] = useState(null); 
+    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false); 
+    const [isProfileModalOpen, setIsProfileModalOpen] = useState(false); 
+
+    const handleUserIconClick = () => {
+        if (user) {
+            setIsProfileModalOpen(true);
+        } else {
+            setIsAuthModalOpen(true);
+        }
+    };
+
+    const handleUserChange = (userData) => {
+        setUser(userData);
+    };
+
+    const handleAuthModalClose = () => {
+        setIsAuthModalOpen(false);
+    };
+
+    const handleProfileModalClose = () => {
+        setIsProfileModalOpen(false);
+    };
+
     return (
         <BrowserRouter>
             <CartProvider>
@@ -27,6 +53,7 @@ function App() {
                     whatsappUrl={WhatsappImage}
                     userUrl={UserImage}
                     magusLogo={MagusLogoImage}
+                    onUserIconClick={handleUserIconClick} 
                 />
                 <Routes>
                     <Route path='/' element={<Homepage />} />
@@ -39,8 +66,10 @@ function App() {
                     <Route path='/cart' element={<Cart />} />
                     <Route path="/orderconfirmation" element={<OrderConfirmation />} />
                     <Route path='*' element={<h1>404 Not Found</h1>} />
-                </Routes>
+                    </Routes>
                 <Footer />
+                <AuthModal isOpen={isAuthModalOpen} onRequestClose={handleAuthModalClose} onUserChange={handleUserChange} />
+                <ProfileModal user={user} isOpen={isProfileModalOpen} onRequestClose={handleProfileModalClose} />
             </CartProvider>
         </BrowserRouter>
         
