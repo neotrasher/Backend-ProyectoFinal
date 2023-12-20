@@ -1,5 +1,6 @@
 import express from 'express';
 import {
+    getCarts,
     createCart,
     addProductToCart,
     getCartById,
@@ -15,13 +16,14 @@ import { isAuthenticated } from '../controllers/authController.js';
 
 const router = express.Router();
 
+router.get('/', getCarts);
 router.post('/', createCart);
-router.post('/:cid/products/:pid', isAuthenticated, addProductToCart);
+router.post('/:cid/product/:pid', isAuthenticated, addProductToCart);
 router.get('/:cid', getCartById);
 router.get('/:cid/products', getProductsInCart);
 router.put('/:cid', isAuthenticated, updateCart);
-router.put('/:cid/products/:pid', isAuthenticated, updateProductQuantityInCart);
-router.delete('/:cid/products/:pid', isAuthenticated, deleteProductFromCart);
+router.put('/:cid/product/:pid', isAuthenticated, updateProductQuantityInCart);
+router.delete('/:cid/product/:pid', isAuthenticated, deleteProductFromCart);
 router.delete('/:cid', isAuthenticated, clearCart);
 router.delete('/:cid/delete', isAuthenticated, deleteCart);
 router.post('/:cid/purchase', isAuthenticated, purchaseCart);

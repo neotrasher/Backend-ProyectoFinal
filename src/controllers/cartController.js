@@ -47,6 +47,15 @@ export const addProductToCart = async (req, res) => {
     }
 };
 
+export const getCarts = async (req, res) => {
+    try {
+        const carts = await Cart.find();
+        res.json(carts);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 export const getCartById = async (req, res) => {
     try {
         const cartId = req.params.cid;
