@@ -41,9 +41,10 @@ router.get('/users/github/callback', passport.authenticate('github', {
 
 // Rutas para la API
 
-router.post('/api/register', userController.postRegisterAPI);
-router.post('/api/login', userController.postLoginAPI);
-router.get('/api/logout', userController.getLogoutAPI);
+router.post('/api/session/register', userController.postRegisterAPI);
+router.post('/api/session/login', userController.postLoginAPI);
+router.get('/api/session/logout', userController.getLogoutAPI);
+router.get('/api/session/current', userController.getCurrentSession);
 router.get('/api/github', passport.authenticate('github'));
 router.post('/users/password_recovery', userController.postPasswordRecovery);
 router.post('/users/reset_password/:token', userController.postResetPassword);

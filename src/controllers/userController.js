@@ -32,7 +32,7 @@ export const showRegister = (req, res) => {
 };
 
 const validateUserData = (user) => {
-    const camposRequeridos = ['email', 'password', 'first_name', 'last_name', 'age'];
+    const camposRequeridos = ['email', 'password', 'first_name', 'last_name'];
 
     for (let campo of camposRequeridos) {
         if (!user[campo]) {
@@ -123,6 +123,15 @@ export const postLoginAPI = async (req, res, next) => {
         });
     })(req, res, next);
 };
+
+export const getCurrentSession = (req, res, next) => {
+    if (req.user) {
+        res.json(req.user);
+    } else {
+        res.status(401).json({ error: 'No hay ninguna sesión activa' });
+    }
+};
+
 
 export const getLogoutAPI = (req, res) => {
     req.session.destroy(async (err) => {
