@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
 
 const Cart = () => {
-    const { cartItems, clearCart, totalPrice, removeItem } = useContext(CartContext);
+    const { cart, clearCart, totalPrice, removeItem } = useContext(CartContext);
     const navigate = useNavigate();
     const scrollToTop = () => {
         window.scrollTo({
@@ -68,7 +68,7 @@ const Cart = () => {
     };
 
     const handleCheckout = () => {
-        if (cartItems.length === 0) {
+        if (cart.products.length === 0) {
             Swal.fire({
                 title: 'Carrito vacío',
                 text: 'No se puede procesar el pago porque el carrito está vacío',
@@ -87,19 +87,19 @@ const Cart = () => {
                 <div className="row">
                     <div className="col-lg-10 offset-lg-1">
                         <div className="cart_container">
-                            <div className="cart_title">Carrito de compras<small> ({cartItems.length} item{cartItems.length !== 1 ? 's' : ''} en tu carrito)</small></div>
+                        <div className="cart_title">Carrito de compras<small> ({cart.products.length} item{cart.products.length !== 1 ? 's' : ''} en tu carrito)</small></div>
                             <div className="cart_items">
                                 <ul className="cart_list">
-                                    {cartItems.map((item) => (
-                                        <li className="cart_item clearfix" key={item.id}>
+                                    {cart.products.map((item) => (
+                                        <li className="cart_item clearfix" key={item.id_prod._id}>
                                             <div className="cart_item_image">
-                                                <img src={item.imagen} alt={item.nombre} />
+                                                <img src={item.id_prod.image} alt={item.id_prod.name} />
                                             </div>
                                             <div className="cart_item_info d-flex justify-content-between">
                                                 <div className="cart_item_name cart_info_col" style={{ flexBasis: '20%' }}>
                                                     <div className="cart_item_title">Producto</div>
                                                     <div className="cart_item_text">
-                                                        <Link to={`/item/${item.id}`} className="cart_item_text">{item.nombre}</Link>
+                                                        <Link to={`/item/${item.id_prod._id}`} className="cart_item_text">{item.id_prod.title}</Link>
                                                     </div>
                                                 </div>
                                                 <div className="cart_item_quantity cart_info_col">
@@ -108,18 +108,18 @@ const Cart = () => {
                                                 </div>
                                                 <div className="cart_item_price cart_info_col">
                                                     <div className="cart_item_title">Precio</div>
-                                                    <div className="cart_item_text">${item.precio}</div>
+                                                    <div className="cart_item_text">${item.id_prod.price}</div>
                                                 </div>
                                                 <div className="cart_item_price1 cart_info_col">
                                                     <div className="cart_item_title">Subtotal</div>
                                                     <div className="cart_item_price_wrapper">
-                                                        <div className="cart_item_text">${item.precio * item.quantity}</div>
+                                                        <div className="cart_item_text">${item.id_prod.price * item.quantity}</div>
                                                     </div>
                                                 </div>
                                                 <div className="cart_item_remove">
                                                     <FontAwesomeIcon
                                                         icon={faTrash}
-                                                        onClick={() => handleRemoveItem(item.id)}
+                                                        onClick={() => handleRemoveItem(item.id_prod._id)}
                                                         className="cart_item_remove_icon"
                                                     />
                                                 </div>

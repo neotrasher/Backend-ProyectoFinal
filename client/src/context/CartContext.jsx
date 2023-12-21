@@ -1,62 +1,70 @@
 import React, { createContext, useState } from "react";
 
 export const CartContext = createContext({
-    cartItems: [],
-    totalQuantity: 0,
-    totalPrice: 0,
+    cart: {
+        products: [],
+        totalQuantity: 0,
+        totalPrice: 0,
+    },
 });
 
 export const CartProvider = ({ children }) => {
-    const [cartItems, setCartItems] = useState([]);
+    const [cart, setCart] = useState({ products: [] });
 
-    console.log(cartItems)
+    const addItem = (productModel, quantity) => {
+        setCart((prevCart) => {
+            const existingProductIndex = prevCart.products.findIndex(
+                (item) => item.id_prod._id === productModel._id
+            );
 
-    const addItem = (item, quantity) => {
-        console.log(item);
-        setCartItems((prevCartItems) => {
-            const existingItemIndex = prevCartItems.findIndex((cartItem) => cartItem.id === item.id);
+            if (existingProductIndex !== -1) {
+                const updatedCart = { ...prevCart };
+                updatedCart.products[existingProductIndex].quantity += quantity;
 
-            if (existingItemIndex !== -1) {
-                const updatedCartItems = [...prevCartItems];
-                updatedCartItems[existingItemIndex].quantity += quantity;
-
-                return updatedCartItems;
+                return updatedCart;
             } else {
-                const newItem = {
-                    ...item,
+                const newProduct = {
+                    id_prod: productModel,
                     quantity: quantity,
-                    precio: item.precio,
-                    imagen: item.imagen,
                 };
 
-                return [...prevCartItems, newItem];
+                return { ...prevCart, products: [...prevCart.products, newProduct] };
             }
         });
     };
 
-    const removeItem = (itemId) => {
-        setCartItems((prevCartItems) =>
-            prevCartItems.filter((item) => item.id !== itemId)
-        );
+    const removeItem = (productId) => {
+        setCart((prevCart) => {
+            const updatedCart = { ...prevCart };
+            updatedCart.products = prevCart.products.filter(
+                (item) => item.id_prod._id !== productId
+            );
+
+            return updatedCart;
+        });
     };
 
     const clearCart = () => {
-        setCartItems([]);
+        setCart({ products: [] });
     };
 
-    const isInCart = (itemId) => {
-        return cartItems.some((item) => item.id === itemId);
+    const isInCart = (productId) => {
+        return cart.products.some((item) => item.id_prod._id === productId);
     };
 
-    const totalQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
-    const totalPrice = cartItems.reduce((total, item) => total + item.precio * item.quantity, 0);
-
+    const totalQuantity = cart.products.reduce(
+        (total, item) => total + item.quantity,
+        0
+    );
+    const totalPrice = cart.products.reduce(
+        (total, item) => total + item.id_prod.price * item.quantity,
+        0
+    );
 
     return (
         <CartContext.Provider
             value={{
-                cartItems,
-                setCartItems,
+                cart,
                 addItem,
                 removeItem,
                 clearCart,
@@ -71,4 +79,3 @@ export const CartProvider = ({ children }) => {
 };
 
 export default CartProvider;
-

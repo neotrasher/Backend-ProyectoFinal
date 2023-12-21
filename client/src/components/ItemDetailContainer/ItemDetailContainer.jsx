@@ -8,13 +8,13 @@ import ItemDetail from '../ItemDetail/ItemDetail';
 const ItemDetailContainer = () => {
     const [product, setProduct] = useState(null);
     const [showSpinner, setShowSpinner] = useState(true);
-    const { itemId } = useParams();
+    const { _id } = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProductDetails = async () => {
             try {
-                const response = await fetch(`/api/products/${itemId}`);
+                const response = await fetch(`/api/products/${_id}`);
                 const productData = await response.json();
 
                 if (productData) {
@@ -43,7 +43,7 @@ const ItemDetailContainer = () => {
         };
 
         fetchProductDetails();
-    }, [itemId]);
+    }, [_id]);
 
     if (showSpinner) {
         return (

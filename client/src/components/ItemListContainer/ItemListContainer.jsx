@@ -16,9 +16,9 @@ function ItemListContainer(props) {
                 }
 
                 const response = await fetch(url);
-                const productsData = await response.json();
+                const responseData  = await response.json();
 
-                setProducts(productsData);
+                setProducts(responseData.payload);
             } catch (error) {
                 console.error(error);
             }

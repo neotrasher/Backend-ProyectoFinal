@@ -31,7 +31,11 @@ const productSchema = new Schema({
         required: true,
         unique: true
     },
-    thumbnails: []
+    thumbnails: [],
+    sales: {
+        type: Number,
+        default: 0
+    }
 })
 
 productSchema.plugin(mongoosePaginate);

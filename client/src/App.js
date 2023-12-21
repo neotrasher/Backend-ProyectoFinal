@@ -76,7 +76,7 @@ function App() {
                     <Route path='/colecciones' element={<Colecciones />} />
                     <Route path='/contacto' element={<Contacto />} />
                     <Route path='/categoria/:productCat' element={<ItemListContainer />} />
-                    <Route path='/item/:itemId' element={<ItemDetailContainer />} />
+                    <Route path='/item/:_id' element={<ItemDetailContainer />} />
                     <Route path='/cart' element={<Cart />} />
                     <Route path="/orderconfirmation" element={<OrderConfirmation />} />
                     <Route path='*' element={<h1>404 Not Found</h1>} />

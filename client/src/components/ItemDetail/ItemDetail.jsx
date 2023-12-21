@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import React, { useContext } from "react";
 import { CartContext } from "../../context/CartContext";
 
-const ItemDetail = ({ id, nombre, precio, imagen, disponible, fechaCreacion, categoria, ventas, stock }) => {
+const ItemDetail = ({ _id, title, price, thumbnails, status, stock }) => {
     const [quantityAdded, setQuantityAdded] = useState(0);
     const { addItem } = useContext(CartContext);
     const scrollToTop = () => {
@@ -16,7 +16,7 @@ const ItemDetail = ({ id, nombre, precio, imagen, disponible, fechaCreacion, cat
 
     const handleOnAdd = (quantity) => {
         setQuantityAdded(quantity);
-        const item = { id, nombre, precio, imagen };
+        const item = { _id, title, price, thumbnail: thumbnails[0] };
         addItem(item, quantity);
     };
 
@@ -24,11 +24,11 @@ const ItemDetail = ({ id, nombre, precio, imagen, disponible, fechaCreacion, cat
 
     return (
         <div className="card mt-1 align-items-center shadow p-3 mb-5 bg-body rounded" data-aos="zoom-in-up" data-aos-duration="1000" style={{ width: '30rem' }}>
-            <img className="card-img-top" src={imagen} alt={nombre} />
+            <img className="card-img-top" src={require(`../../assets/img/${thumbnails[0]}`).default} alt={title} />
             <div className="card-body card-text text-center">
-                <h5>{nombre}</h5>
-                <h6>Precio: {precio}</h6>
-                <p>Disponible: {disponible ? 'Sí' : 'No'}</p>
+                <h5>{title}</h5>
+                <h6>Precio: {price}</h6>
+                <p>Disponible: {status ? 'Sí' : 'No'}</p>
                 {!showCheckoutButton && (
                     <ItemCount initial={1} stock={stock} onAddToCart={handleOnAdd} />
                 )}
