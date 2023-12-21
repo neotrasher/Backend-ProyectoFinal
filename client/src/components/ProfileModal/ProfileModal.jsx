@@ -16,15 +16,16 @@ const customStyles = {
 
 Modal.setAppElement('#root');
 
-const ProfileModal = ({ isOpen, onRequestClose, user, setUser  }) => {
+const ProfileModal = ({ isOpen, onRequestClose, user, setUser }) => {
     if (!user) {
         return null;
     }
 
     const handleLogout = async () => {
         try {
-            await axios.get('/api/users/logout');  
-            setUser(null);  
+            await axios.get('/api/session/logout');
+            setUser(null);
+
         } catch (error) {
             console.error('Error al cerrar la sesión', error);
         }
@@ -33,7 +34,7 @@ const ProfileModal = ({ isOpen, onRequestClose, user, setUser  }) => {
     return (
         <Modal isOpen={isOpen} onRequestClose={onRequestClose} style={customStyles}>
             <div className="profile-card">
-                <img src="https://i.pravatar.cc/150?img=67" className="rounded-circle w-50 mx-auto d-block" alt="user image"/>
+                <img src="https://i.pravatar.cc/150?img=67" className="rounded-circle w-50 mx-auto d-block" alt="user image" />
                 <h2 className="mt-4">Bienvenid@ {user.first_name} {user.last_name}</h2>
                 <p className="lead">Tu rol es {user.role}</p>
                 <button className="btn btn-dark mt-3" onClick={handleLogout}>Cerrar sesión</button>
