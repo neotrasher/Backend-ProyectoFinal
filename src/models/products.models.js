@@ -31,7 +31,10 @@ const productSchema = new Schema({
         required: true,
         unique: true
     },
-    thumbnails: [],
+    thumbnails: {
+        type: String,
+        required: true
+    },
     sales: {
         type: Number,
         default: 0

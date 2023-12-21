@@ -24,7 +24,7 @@ const ItemDetail = ({ _id, title, price, thumbnails, status, stock }) => {
 
     return (
         <div className="card mt-1 align-items-center shadow p-3 mb-5 bg-body rounded" data-aos="zoom-in-up" data-aos-duration="1000" style={{ width: '30rem' }}>
-            <img className="card-img-top" src={require(`../../assets/img/${thumbnails[0]}`).default} alt={title} />
+            <img className="card-img-top" src={thumbnails} alt={title} />
             <div className="card-body card-text text-center">
                 <h5>{title}</h5>
                 <h6>Precio: {price}</h6>
