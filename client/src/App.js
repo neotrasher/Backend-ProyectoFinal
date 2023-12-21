@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import NavBar from './components/NavBar/NavBar';
 import ItemListContainer from './components/ItemListContainer/ItemListContainer';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -23,6 +24,18 @@ function App() {
     const [user, setUser] = useState(null); 
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false); 
     const [isProfileModalOpen, setIsProfileModalOpen] = useState(false); 
+
+    useEffect(() => {
+        const getCurrentUser = async () => {
+            try {
+                const response = await axios.get('/api/session/current');
+                setUser(response.data);
+            } catch (error) {
+                console.error('Error al obtener el usuario actual:', error);
+            }
+        };
+        getCurrentUser();
+    }, []);
 
     const handleUserIconClick = () => {
         if (user) {
@@ -53,7 +66,8 @@ function App() {
                     whatsappUrl={WhatsappImage}
                     userUrl={UserImage}
                     magusLogo={MagusLogoImage}
-                    onUserIconClick={handleUserIconClick} 
+                    onUserIconClick={handleUserIconClick}
+                    user={user} 
                 />
                 <Routes>
                     <Route path='/' element={<Homepage />} />
@@ -66,13 +80,12 @@ function App() {
                     <Route path='/cart' element={<Cart />} />
                     <Route path="/orderconfirmation" element={<OrderConfirmation />} />
                     <Route path='*' element={<h1>404 Not Found</h1>} />
-                    </Routes>
+                </Routes>
                 <Footer />
                 <AuthModal isOpen={isAuthModalOpen} onRequestClose={handleAuthModalClose} onUserChange={handleUserChange} />
-                <ProfileModal user={user} isOpen={isProfileModalOpen} onRequestClose={handleProfileModalClose} />
+                <ProfileModal user={user} setUser={setUser} isOpen={isProfileModalOpen} onRequestClose={handleProfileModalClose} />
             </CartProvider>
         </BrowserRouter>
-        
     );
 }
 

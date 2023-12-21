@@ -75,7 +75,7 @@ app.use(session({
     store: store,
     cookie: {
         secure: false,
-        maxAge: 60000
+        maxAge: 172800000
     }
 }));
 

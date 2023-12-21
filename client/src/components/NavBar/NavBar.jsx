@@ -2,14 +2,9 @@ import React, { useState } from 'react';
 import './navbar.css';
 import CartWidget from '../CartWidget/CartWidget';
 import { Link } from 'react-router-dom';
-import AuthModal from '../AuthModal/AuthModal';
-import ProfileModal from '../ProfileModal/ProfileModal';
 
-const Navbar = (props) => {
-    const [user, setUser] = useState(null);
+const Navbar = ({ instagramUrl, facebookUrl, whatsappUrl, userUrl, magusLogo, user, onUserIconClick }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-    const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
     const handleMouseEnter = () => {
         setIsDropdownOpen(true);
@@ -19,50 +14,30 @@ const Navbar = (props) => {
         setIsDropdownOpen(false);
     };
 
-    const handleUserIconClick = (event) => {
-        event.preventDefault();
-        if (user) {
-            setIsProfileModalOpen(true);
-        } else {
-            setIsLoginModalOpen(true);
-        }
-    };
-
-    const handleLoginModalClose = () => {
-        setIsLoginModalOpen(false);
-    };
-
-    const handleProfileModalClose = () => {
-        setIsProfileModalOpen(false);
-    };
-
-    const handleLoginSuccess = (user) => {
-        setUser(user);
-        setIsLoginModalOpen(false);
-    };
-
     return (
         <div>
             <header className="headerInfo">
                 <nav className="navbarInfo">
                     <div className="container-fluid d-flex justify-content-around">
                         <a className="navbar-brand ms-5" href="https://www.instagram.com/magusbylili/" target="_blank" rel="noopener noreferrer">
-                            <img className="logosNavbar" src={props.instagramUrl} alt="instagram" />
+                            <img className="logosNavbar" src={instagramUrl} alt="instagram" />
                         </a>
                         <a className="navbar-brand" href="https://www.facebook.com/magusbylili" target="_blank" rel="noopener noreferrer">
-                            <img className="logosNavbar" src={props.facebookUrl} alt="facebook" />
+                            <img className="logosNavbar" src={facebookUrl} alt="facebook" />
                         </a>
                         <span className="headerInfo col-6 d-none d-sm-none d-md-block text-center">
                             Productos hechos a mano, no olvides consultar los tiempos de envío.
                         </span>
                         <a href="https://wa.me/573154299368" target="_blank" rel="noopener noreferrer">
-                            <img className="logosNavbar me-3" src={props.whatsappUrl} alt="whatsapp" />
+                            <img className="logosNavbar me-3" src={whatsappUrl} alt="whatsapp" />
                         </a>
                         {user ? (
-                            <span>Hola, {user.first_name}</span>
+                            <Link to="" onClick={onUserIconClick} style={{ color: 'black', textDecoration: 'none' }}>
+                                Hola, <strong>{user.first_name}</strong>
+                            </Link>
                         ) : (
-                            <Link to="" onClick={handleUserIconClick}>
-                                <img className="logosNavbar me-3" src={props.userUrl} alt="usuario" />
+                            <Link to="" onClick={onUserIconClick}>
+                                <img className="logosNavbar me-3" src={userUrl} alt="usuario" />
                             </Link>
                         )}
                         <CartWidget />
@@ -72,7 +47,7 @@ const Navbar = (props) => {
             <nav className="navbar navbar-expand-lg">
                 <div className="container-fluid">
                     <Link to="/" className="ms-lg-5">
-                        <img className="maguslogo" src={props.magusLogo} alt="maguslogo" />
+                        <img className="maguslogo" src={magusLogo} alt="maguslogo" />
                     </Link>
                     <button
                         className="navbar-toggler"
@@ -148,16 +123,6 @@ const Navbar = (props) => {
                     </div>
                 </div>
             </nav>
-            <AuthModal
-                isOpen={isLoginModalOpen}
-                onRequestClose={handleLoginModalClose}
-                onLoginSuccess={handleLoginSuccess}
-            />
-            <ProfileModal
-                isOpen={isProfileModalOpen}
-                onRequestClose={handleProfileModalClose}
-                user={user}
-            />
         </div>
     );
 };
