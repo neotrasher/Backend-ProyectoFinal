@@ -79,15 +79,14 @@ export const CartProvider = ({ children }) => {
         
         return () => clearTimeout(timer);
     }, [cart]);
-    
+
     useEffect(() => {
         let savedCart = JSON.parse(localStorage.getItem('cart'));
-
+    
         const loadCart = async () => {
-            const cartId = localStorage.getItem('cartId');
-            if (cartId) {
+            if (cart._id) {
                 try {
-                    const response = await axios.get(`/api/carts/${cartId}`);
+                    const response = await axios.get(`/api/carts/${cart._id}`);
                     if (response.data && response.data.products.length > 0) {
                         savedCart = response.data;
                     }
@@ -96,13 +95,14 @@ export const CartProvider = ({ children }) => {
                 }
             }
         };
-
+    
         loadCart().then(() => {
             if (savedCart) {
                 setCart(savedCart);
             }
         });
     }, []);
+    
 
     return (
         <CartContext.Provider
