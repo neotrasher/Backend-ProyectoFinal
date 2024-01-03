@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Item from '../Item/Item';
 import './TopSellingProducts.css';
+import axios from 'axios';
 
 const TopSellingProducts = () => {
     const [topSellingProducts, setTopSellingProducts] = useState([]);
@@ -8,18 +9,18 @@ const TopSellingProducts = () => {
     useEffect(() => {
         const fetchTopSellingProducts = async () => {
             try {
-                const response = await fetch('/api/products');
-                const products = await response.json();
-
-                const sortedProducts = products.sort((a, b) => b.ventas - a.ventas);
+                const response = await axios.get('/api/products');
+                const products = response.data.payload;
+    
+                const sortedProducts = products.sort((a, b) => b.sales - a.sales);
                 const topSelling = sortedProducts.slice(0, 4);
-
+    
                 setTopSellingProducts(topSelling);
             } catch (error) {
                 console.error(error);
             }
         };
-
+    
         fetchTopSellingProducts();
     }, []);
 
