@@ -28,9 +28,8 @@ export const addProductToCart = async (req, res) => {
         const productId = req.params.pid;
         const { quantity } = req.body;
 
-        // Encuentra el carrito y el producto en la base de datos
-        const cart = await Cart.findById(cartId);
-        const product = await productModel.findById(productId); // Asegúrate de importar productModel en la parte superior de tu archivo
+        const cart = await Cart.findById(cartId).populate('products.id_prod');
+        const product = await productModel.findById(productId); 
 
         const existingProductIndex = cart.products.findIndex(product => product.id_prod._id.toString() === productId);
 
@@ -38,14 +37,13 @@ export const addProductToCart = async (req, res) => {
             cart.products[existingProductIndex].quantity += quantity;
         } else {
             cart.products.push({
-                id_prod: product,  // Ahora guarda todo el objeto del producto
+                id_prod: product,  
                 quantity: quantity,
             });
         }
 
         const updatedCart = await cart.save();
-
-        res.json(updatedCart);
+        res.json({ ...updatedCart._doc });
     } catch (error) {
         res.status(404).json({ error: error.message });
     }

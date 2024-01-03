@@ -60,7 +60,14 @@ export const CartProvider = ({ children }) => {
         0
     );
     const totalPrice = cart.products.reduce(
-        (total, item) => total + item.id_prod.price * item.quantity,
+        (total, item) => {
+            if (typeof item.id_prod === 'object' && item.id_prod !== null) {
+                return total + item.id_prod.price * item.quantity;
+            } else {
+                console.error('id_prod no es un objeto:', item);
+                return total;
+            }
+        },
         0
     );
 
