@@ -5,10 +5,18 @@ import { useNavigate } from 'react-router-dom';
 import './Cart.css';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link } from 'react-router-dom';
 
 const Cart = ({ product, user }) => {
     const { cart, clearCart, totalPrice, removeItem } = useContext(CartContext);
     const navigate = useNavigate();
+
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    };
 
     const handleClearCart = async () => {
         const result = await Swal.fire({
@@ -100,10 +108,12 @@ const Cart = ({ product, user }) => {
                 <div className="row">
                     <div className="col-lg-10 offset-lg-1">
                         <div className="cart_container">
-                            <div className="cart_title">Carrito de compras<small> ({cart.products.length} producto{cart.products.length !== 1 ? 's' : ''} en tu carrito)</small></div>
+                            <div className="cart_title">
+                                Carrito de compras <small>({cart && cart.products ? `${cart.products.length} producto${cart.products.length !== 1 ? 's' : ''}` : '0 productos'} en tu carrito)</small>
+                            </div>
                             <div className="cart_items">
                                 <ul className="cart_list">
-                                    {cart.products.map((product) => (
+                                    {cart && cart.products && cart.products.map((product) => (
                                         <li className="cart_item clearfix" key={product.id_prod._id}>
                                             <div className="cart_item_image">
                                                 <img src={product.id_prod.thumbnails} alt={product.id_prod.title} />
@@ -111,7 +121,9 @@ const Cart = ({ product, user }) => {
                                             <div className="cart_item_info d-flex justify-content-between">
                                                 <div className="cart_item_name cart_info_col">
                                                     <div className="cart_item_title">Producto</div>
-                                                    <div className="cart_item_text">{product.id_prod.title}</div>
+                                                    <Link to={`/item/${product.id_prod._id}`} style={{ textDecoration: 'none' }}>
+                                                        <div className="cart_item_text">{product.id_prod.title}</div>
+                                                    </Link>
                                                 </div>
                                                 <div className="cart_item_quantity cart_info_col">
                                                     <div className="cart_item_title">Cantidad</div>
@@ -140,8 +152,8 @@ const Cart = ({ product, user }) => {
                                 </div>
                             </div>
                             <div className="cart_buttons">
-                                <button type="button" className="button cart_button_clear" onClick={handleClearCart}>Vaciar Carrito</button>
-                                <button type="button" className="button cart_button_checkout" onClick={() => navigate('/orderconfirmation')}>Proceder con el pago</button>
+                                <button type="button" className="button cart_button_clear" onClick={() => { handleClearCart(); scrollToTop(); }}>Vaciar Carrito</button>
+                                <button type="button" className="button cart_button_checkout" onClick={() => { handleCheckout(); scrollToTop(); }}>Proceder con el pago</button>
                             </div>
                         </div>
                     </div>

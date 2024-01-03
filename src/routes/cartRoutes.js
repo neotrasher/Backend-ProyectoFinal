@@ -10,9 +10,10 @@ import {
     clearCart,
     updateCart,
     purchaseCart,
-    deleteCart
+    deleteCart,
+    getCurrentCart
 } from '../controllers/cartController.js';
-import { isAuthenticated } from '../controllers/authController.js';   
+import { isAuthenticated } from '../controllers/authController.js';
 
 const router = express.Router();
 
@@ -26,7 +27,8 @@ router.put('/:cid/product/:pid', isAuthenticated, updateProductQuantityInCart);
 router.delete('/:cid/product/:pid', isAuthenticated, deleteProductFromCart);
 router.delete('/:cid', isAuthenticated, clearCart);
 router.delete('/:cid/delete', isAuthenticated, deleteCart);
-router.post('/:cid/purchase', isAuthenticated, purchaseCart);
+router.post('/:cid', isAuthenticated, purchaseCart);
+router.get('/current', isAuthenticated, getCurrentCart);
 
 export default router;
 

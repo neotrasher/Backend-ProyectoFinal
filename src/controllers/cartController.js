@@ -3,6 +3,7 @@ import Ticket from "../models/ticket.models.js";
 import { v4 as uuidv4 } from 'uuid';
 import dotenv from 'dotenv';
 import productModel from '../models/products.models.js';
+import userModel from '../models/user.models.js';
 
 dotenv.config();
 
@@ -236,11 +237,11 @@ export const purchaseCart = async (req, res) => {
         });
 
         await newTicket.save();
+
+        res.json({ message: 'Compra finalizada.', ticket: newTicket, productsFailed, id: newTicket._id });
+    } else {
+        res.json({ message: 'Compra finalizada sin tickets.', productsFailed });
     }
-
-    await cart.save();
-
-    res.json({ message: 'Compra finalizada.', ticket: newTicket, productsFailed });
 }
 
 export const deleteCart = async (req, res) => {
@@ -255,5 +256,22 @@ export const deleteCart = async (req, res) => {
         res.json({ message: 'Carrito eliminado exitosamente.' });
     } catch (error) {
         res.status(500).json({ error: error.message });
+    }
+};
+
+export const getCurrentCart = async (req, res) => {
+    try {
+        const userId = req.user._id;
+
+        const user = await user.findById(userId).populate('cart');
+
+        if(user && user.cart) {
+            res.status(200).json(user.cart);
+        } else {
+            res.status(404).send({ message: 'Carrito no encontrado' });
+        }
+    } catch (error) {
+        console.error('Error al obtener el carrito actual:', error);
+        res.status(500).send({ message: 'Error al obtener el carrito' });
     }
 };

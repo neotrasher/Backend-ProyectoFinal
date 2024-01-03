@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 
 export const CartContext = createContext({
@@ -55,11 +55,12 @@ export const CartProvider = ({ children }) => {
         return cart.products.some((item) => item.id_prod._id === productId);
     };
 
-    const totalQuantity = cart.products.reduce(
+    const totalQuantity = cart && cart.products ? cart.products.reduce(
         (total, item) => total + item.quantity,
         0
-    );
-    const totalPrice = cart.products.reduce(
+    ) : 0;
+    
+    const totalPrice = cart && cart.products ? cart.products.reduce(
         (total, item) => {
             if (typeof item.id_prod === 'object' && item.id_prod !== null) {
                 return total + item.id_prod.price * item.quantity;
@@ -69,7 +70,39 @@ export const CartProvider = ({ children }) => {
             }
         },
         0
-    );
+    ) : 0;
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }, 1000);
+        
+        return () => clearTimeout(timer);
+    }, [cart]);
+    
+    useEffect(() => {
+        let savedCart = JSON.parse(localStorage.getItem('cart'));
+
+        const loadCart = async () => {
+            const cartId = localStorage.getItem('cartId');
+            if (cartId) {
+                try {
+                    const response = await axios.get(`/api/carts/${cartId}`);
+                    if (response.data && response.data.products.length > 0) {
+                        savedCart = response.data;
+                    }
+                } catch (error) {
+                    console.error('Error al cargar el carrito:', error);
+                }
+            }
+        };
+
+        loadCart().then(() => {
+            if (savedCart) {
+                setCart(savedCart);
+            }
+        });
+    }, []);
 
     return (
         <CartContext.Provider

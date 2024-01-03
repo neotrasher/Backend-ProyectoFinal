@@ -1,11 +1,11 @@
 import React, { useState, useContext } from 'react';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { CartContext } from '../../context/CartContext';
 import './OrderConfirmation.css';
 import Swal from 'sweetalert2';
+import axios from 'axios';
 
-const OrderConfirmation = () => {
+const OrderConfirmation = ({ product, user }) => {
     const [email, setEmail] = useState('');
     const [confirmEmail, setConfirmEmail] = useState('');
     const [emailMismatch, setEmailMismatch] = useState(false);
@@ -18,7 +18,8 @@ const OrderConfirmation = () => {
     const [state, setState] = useState('');
     const [discountCode, setDiscountCode] = useState('');
     const navigate = useNavigate();
-    const { totalPrice, clearCart, cartItems } = useContext(CartContext);
+    const { totalPrice, clearCart, cartItems, cart  } = useContext(CartContext);
+    const cartId = cart._id;
 
     const handleInputChange = (event, setValue, fieldType) => {
         const inputValue = event.target.value;
@@ -39,7 +40,6 @@ const OrderConfirmation = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const db = getFirestore();
 
         if (emailMismatch) {
             return;
@@ -57,7 +57,7 @@ const OrderConfirmation = () => {
         }
 
         try {
-            const docRef = await addDoc(collection(db, 'orders'), {
+            const response = await axios.post(`/api/carts/${cartId}`, {
                 email,
                 cardNumber,
                 expiration,
@@ -71,12 +71,12 @@ const OrderConfirmation = () => {
                 date: new Date(),
             });
 
-            console.log('Orden creada con ID:', docRef.id);
+            console.log('Orden creada con ID:', response.data.id);
 
             Swal.fire({
                 icon: 'success',
                 title: '¡Compra realizada!',
-                text: `Tu orden con ID ${docRef.id} se ha completado correctamente.`,
+                text: `Tu orden con ID ${response.data.id} se ha completado correctamente.`,
                 confirmButtonColor: '#4A4848',
                 iconColor: '#BD95B7',
             }).then(() => {

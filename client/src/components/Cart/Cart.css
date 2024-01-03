@@ -107,6 +107,13 @@ ul {
     margin-top: 15px;
     text-decoration: none;
     color: #4A4848;
+    overflow: hidden;       
+    text-overflow: ellipsis; 
+    white-space: nowrap;    
+}
+
+.cart_item_text a:hover {
+    font-weight: bold;
 }
 
 .cart_item_text span {
@@ -128,6 +135,12 @@ ul {
 
 .cart_item_total {
     text-align: right
+}
+
+.cart_item_name,
+.cart_item_quantity,
+.cart_item_price {
+    flex: 1 1 0px; 
 }
 
 .order_total {

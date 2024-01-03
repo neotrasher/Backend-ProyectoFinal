@@ -77,7 +77,7 @@ export const postRegister = async (req, res, next) => {
         if (err) {
             return next(err);
         }
-        return res.json(savedUser);
+        return res.json({ user: savedUser, cartId: cart._id });
     });
 };
 
@@ -143,7 +143,7 @@ export const postLoginAPI = async (req, res, next) => {
             user.last_connection = Date.now();
             await user.save();
 
-            return res.status(200).json({ message: 'Inicio de sesión exitoso', user });
+            return res.status(200).json({ message: 'Inicio de sesión exitoso', user, cartId: cart._id });
         });
     })(req, res, next);
 };

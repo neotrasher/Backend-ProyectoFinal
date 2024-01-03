@@ -39,6 +39,7 @@ const AuthModal = ({ onUserChange, onRequestClose, isOpen }) => {
             onUserChange(response.data.user);
             const cart = response.data.user.cart;
             setCart(cart);
+            localStorage.setItem('cartId', cart._id);
             onRequestClose();
         } catch (error) {
             setError('Error al iniciar sesión');
@@ -59,6 +60,7 @@ const AuthModal = ({ onUserChange, onRequestClose, isOpen }) => {
             onUserChange(response.data.user);
             const cart = response.data.user.cart;
             setCart(cart);
+            localStorage.setItem('cartId', cart._id);
             onRequestClose();
         } catch (error) {
             setError('Error al registrarse');
