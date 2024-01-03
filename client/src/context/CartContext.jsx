@@ -1,4 +1,5 @@
 import React, { createContext, useState } from "react";
+import axios from "axios";
 
 export const CartContext = createContext({
     cart: {
@@ -9,44 +10,46 @@ export const CartContext = createContext({
 });
 
 export const CartProvider = ({ children }) => {
-    const [cart, setCart] = useState({ products: [] });
+    const initialCartState = { products: [] };
+    const [cart, setCart] = useState(initialCartState);
 
-    const addItem = (productModel, quantity) => {
-        setCart((prevCart) => {
-            const existingProductIndex = prevCart.products.findIndex(
-                (item) => item.id_prod._id === productModel._id
-            );
+    const addItem = (updatedCart) => {
+        setCart(updatedCart);
+    };
 
-            if (existingProductIndex !== -1) {
-                const updatedCart = { ...prevCart };
-                updatedCart.products[existingProductIndex].quantity += quantity;
-
-                return updatedCart;
-            } else {
-                const newProduct = {
-                    id_prod: productModel,
-                    quantity: quantity,
-                };
-
-                return { ...prevCart, products: [...prevCart.products, newProduct] };
+    const removeItem = async (productId) => {
+        if (cart._id && productId) {
+            try {
+                await axios.delete(`/api/carts/${cart._id}/product/${productId}`);
+                setCart((prevCart) => {
+                    const updatedCart = { ...prevCart };
+                    updatedCart.products = prevCart.products.filter(
+                        (item) => item.id_prod._id !== productId
+                    );
+        
+                    return updatedCart;
+                });
+            } catch (error) {
+                console.error("Error:", error);
             }
-        });
+        } else {
+            console.error("Error: ID del carrito o del producto es undefined");
+        }
     };
 
-    const removeItem = (productId) => {
-        setCart((prevCart) => {
-            const updatedCart = { ...prevCart };
-            updatedCart.products = prevCart.products.filter(
-                (item) => item.id_prod._id !== productId
-            );
-
-            return updatedCart;
-        });
+    const clearCart = async () => {
+        if (cart._id) {
+            try {
+                await axios.delete(`/api/carts/${cart._id}`);
+                setCart(initialCartState);
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        } else {
+            console.error("Error: ID del carrito es undefined");
+        }
     };
 
-    const clearCart = () => {
-        setCart({ products: [] });
-    };
 
     const isInCart = (productId) => {
         return cart.products.some((item) => item.id_prod._id === productId);

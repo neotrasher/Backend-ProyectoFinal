@@ -3,8 +3,9 @@ import ItemCount from "../ItemCount/ItemCount";
 import { Link } from "react-router-dom";
 import React, { useContext } from "react";
 import { CartContext } from "../../context/CartContext";
+import axios from 'axios';
 
-const ItemDetail = ({ _id, title, price, thumbnails, status, stock }) => {
+const ItemDetail = ({ _id, title, price, thumbnails, status, stock, user }) => {
     const [quantityAdded, setQuantityAdded] = useState(0);
     const { addItem } = useContext(CartContext);
     const scrollToTop = () => {
@@ -14,10 +15,24 @@ const ItemDetail = ({ _id, title, price, thumbnails, status, stock }) => {
         });
     };
 
-    const handleOnAdd = (quantity) => {
+    const handleOnAdd = async (quantity) => {
         setQuantityAdded(quantity);
-        const item = { _id, title, price, thumbnail: thumbnails[0] };
-        addItem(item, quantity);
+        const product = { _id, title, price, thumbnails, quantity };
+    
+        console.log("Producto:", product);
+        console.log("ID del Carrito:", user.cart);
+    
+        try {
+            const response = await axios.post(`/api/carts/${user.cart}/product/${product._id}`, product);
+            const updatedCart = response.data;
+    
+            console.log("Carrito actualizado:", updatedCart);
+            console.log("Productos en el carrito:", updatedCart.products);
+    
+            addItem(updatedCart);
+        } catch (error) {
+            console.error('Error al agregar el producto al carrito', error);
+        }
     };
 
     const showCheckoutButton = quantityAdded > 0;

@@ -2,6 +2,7 @@ import Cart from '../models/carts.models.js';
 import Ticket from "../models/ticket.models.js";
 import { v4 as uuidv4 } from 'uuid';
 import dotenv from 'dotenv';
+import productModel from '../models/products.models.js';
 
 dotenv.config();
 
@@ -27,15 +28,17 @@ export const addProductToCart = async (req, res) => {
         const productId = req.params.pid;
         const { quantity } = req.body;
 
+        // Encuentra el carrito y el producto en la base de datos
         const cart = await Cart.findById(cartId);
+        const product = await productModel.findById(productId); // Asegúrate de importar productModel en la parte superior de tu archivo
 
-        const existingProductIndex = cart.products.findIndex(product => product.id_prod.toString() === productId);
+        const existingProductIndex = cart.products.findIndex(product => product.id_prod._id.toString() === productId);
 
         if (existingProductIndex !== -1) {
             cart.products[existingProductIndex].quantity += quantity;
         } else {
             cart.products.push({
-                id_prod: productId,
+                id_prod: product,  // Ahora guarda todo el objeto del producto
                 quantity: quantity,
             });
         }
@@ -47,6 +50,7 @@ export const addProductToCart = async (req, res) => {
         res.status(404).json({ error: error.message });
     }
 };
+
 
 export const getCarts = async (req, res) => {
     try {
@@ -77,17 +81,14 @@ export const getCartById = async (req, res) => {
 
 export const getProductsInCart = async (req, res) => {
     try {
-        const cartId = req.params.cid;
-        const cart = await Cart.findById(cartId).populate({
-            path: 'products.id_prod',
-            model: 'products'
-        });
+        const userId = req.user._id;
+        const user = await user.findById(userId).populate('cart');
 
-        if (!cart) {
-            return res.status(404).json({ error: 'Carrito sin productos encontrados' });
+        if (!user.cart) {
+            return res.status(404).json({ error: 'Carrito no encontrado' });
         }
 
-        res.json(cart.products);
+        res.json(user.cart.products);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -227,7 +228,7 @@ export const purchaseCart = async (req, res) => {
 
         let finalAmount = totalAmount;
         if (req.user.role === 'premium') {
-          finalAmount = totalAmount * discount; 
+            finalAmount = totalAmount * discount;
         }
 
         const newTicket = new Ticket({

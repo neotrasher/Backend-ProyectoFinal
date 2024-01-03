@@ -51,6 +51,7 @@ router.post('/users/reset_password/:token', userController.postResetPassword);
 router.post('/api/:uid/documents', upload.array('documents'), userController.uploadDocuments); 
 router.get('/api/users', userController.getUsers);
 router.delete('/api/users', userController.deleteInactiveUsers);
+router.post('/api/cart/update', userController.updateCart);
 
 export default router;
 

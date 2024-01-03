@@ -24,6 +24,7 @@ function App() {
     const [user, setUser] = useState(null); 
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false); 
     const [isProfileModalOpen, setIsProfileModalOpen] = useState(false); 
+    const [product, setProduct] = useState(null); 
 
     useEffect(() => {
         const getCurrentUser = async () => {
@@ -34,8 +35,20 @@ function App() {
                 console.error('Error al obtener el usuario actual:', error);
             }
         };
+    
+        const getProduct = async () => {
+            try {
+                const response = await axios.get('/api/products');
+                setProduct(response.data);
+            } catch (error) {
+                console.error('Error al obtener el producto:', error);
+            }
+        };
+    
         getCurrentUser();
+        getProduct();
     }, []);
+    
 
     const handleUserIconClick = () => {
         if (user) {
@@ -76,8 +89,8 @@ function App() {
                     <Route path='/colecciones' element={<Colecciones />} />
                     <Route path='/contacto' element={<Contacto />} />
                     <Route path='/categoria/:productCat' element={<ItemListContainer />} />
-                    <Route path='/item/:_id' element={<ItemDetailContainer />} />
-                    <Route path='/cart' element={<Cart />} />
+                    <Route path='/item/:_id' element={<ItemDetailContainer user={user} />} />
+                    <Route path='/cart' element={<Cart product={product}/>} />
                     <Route path="/orderconfirmation" element={<OrderConfirmation />} />
                     <Route path='*' element={<h1>404 Not Found</h1>} />
                 </Routes>

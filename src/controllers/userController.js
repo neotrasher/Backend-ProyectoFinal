@@ -222,6 +222,19 @@ export const postResetPassword = async (req, res, next) => {
     }
 };
 
+export const updateCart = async (req, res) => {
+    let cart = req.session.cart;
+
+    cart = {
+        ...cart,
+        ...req.body,
+    };
+
+    req.session.cart = cart;
+
+    res.json({ success: true, cart });
+};
+
 export async function uploadDocuments(req, res, next) {
     try {
         const userId = req.params.uid;

@@ -26,6 +26,7 @@ const AuthModal = ({ onUserChange, onRequestClose, isOpen }) => {
     const [error, setError] = useState(null);
     const [isLogin, setIsLogin] = useState(true);
     const [forgotPassword, setForgotPassword] = useState(false);
+    const [cart, setCart] = useState([]);
 
     const handleLogin = async (event) => {
         event.preventDefault();
@@ -35,8 +36,9 @@ const AuthModal = ({ onUserChange, onRequestClose, isOpen }) => {
                 email,
                 password
             });
-            console.log(response.data)
             onUserChange(response.data.user);
+            const cart = response.data.user.cart;
+            setCart(cart);
             onRequestClose();
         } catch (error) {
             setError('Error al iniciar sesión');
@@ -54,8 +56,9 @@ const AuthModal = ({ onUserChange, onRequestClose, isOpen }) => {
                 last_name: lastName,
                 age
             });
-            console.log(response.data)
             onUserChange(response.data.user);
+            const cart = response.data.user.cart;
+            setCart(cart);
             onRequestClose();
         } catch (error) {
             setError('Error al registrarse');

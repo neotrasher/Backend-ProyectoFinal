@@ -5,7 +5,7 @@ import './ItemDetailContainer.css';
 import Swal from 'sweetalert2';
 import ItemDetail from '../ItemDetail/ItemDetail';
 
-const ItemDetailContainer = () => {
+const ItemDetailContainer = ({ user }) => {
     const [product, setProduct] = useState(null);
     const [showSpinner, setShowSpinner] = useState(true);
     const { _id } = useParams();
@@ -57,7 +57,7 @@ const ItemDetailContainer = () => {
 
     return (
         <div className="cards p-5 align-items-center">
-            {product && <ItemDetail {...product} />}
+            {product && <ItemDetail {...product} user={user} />}
         </div>
     );
 };
